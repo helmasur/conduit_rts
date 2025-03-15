@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://4ij7u4ntmvdc"]
+[gd_scene load_steps=7 format=3 uid="uid://4ij7u4ntmvdc"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://bcp3gus4vjqtc" path="res://gui.gd" id="3_h2yge"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
 colors = PackedColorArray(0.169245, 0.169245, 0.169245, 1, 0.244776, 0.244776, 0.244776, 1)
@@ -17,9 +18,20 @@ noise = SubResource("FastNoiseLite_h2yge")
 [node name="Main" type="Node2D"]
 script = ExtResource("1_h2yge")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-script = ExtResource("2_0xm2m")
-
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_0xm2m")
+
+[node name="GUI" type="VBoxContainer" parent="Camera2D"]
+offset_left = -559.0
+offset_top = -304.0
+offset_right = -506.0
+offset_bottom = -264.0
+script = ExtResource("3_h2yge")
+
+[node name="Energy" type="Label" parent="Camera2D/GUI"]
+layout_mode = 2
+text = "Energy"

@@ -14,7 +14,7 @@ func _ready() -> void:
 	_change_direction()
 
 func _physics_process(_delta):
-	space = calc_free_space_factor()
+	space = calc_free_space_factor(global_position)
 	queue_redraw()
 	move_and_slide()
 
@@ -26,17 +26,14 @@ func _change_direction():
 	velocity = velocity.normalized()
 	velocity *= speed
 
-func calc_free_space_factor() -> float:
-	var sp = 0.0
+func calc_free_space_factor(globpos) -> float:
+	var fsf = 0.0
 	var group_name = "units"  # Byt ut mot gruppens namn om det är något annat
-	var my_position = global_position
-	
 	var members = get_tree().get_nodes_in_group(group_name)
 	
 	for member in members:
 		if member != self:  # Undvik att räkna avståndet till sig själv
-			sp += 1.0 / my_position.distance_to(member.global_position)
-	sp = 1.0 / sp
-	sp = pow(sp, 1.5) / 2.0
-	#print(sp)
-	return sp
+			fsf += 1.0 / globpos.distance_to(member.global_position)
+	fsf = 1.0 / fsf
+	fsf = pow(fsf, 1.5) / 2.0
+	return fsf

@@ -10,6 +10,8 @@ func _process(_delta: float) -> void:
 	$H.text = str(round(get_parent().health_current))
 	$P.text = str(round(get_parent().get_attack_value()))
 	$S.text = str(round(get_parent().get_speed_value()))
+	$FSF.text = "%.3f" % get_parent().fsf
+
 	
 
 

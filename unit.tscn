@@ -20,21 +20,27 @@ visible = false
 shape = SubResource("RectangleShape2D_ctwoc")
 
 [node name="unit gui" type="VBoxContainer" parent="."]
-offset_right = 60.0
-offset_bottom = 164.0
+offset_left = 22.0
+offset_top = -20.0
+offset_right = 172.0
+offset_bottom = 171.0
 script = ExtResource("3_5wnup")
 
 [node name="E" type="Label" parent="unit gui"]
 layout_mode = 2
+text = "Energy"
 
 [node name="H" type="Label" parent="unit gui"]
 layout_mode = 2
+text = "Health"
 
 [node name="P" type="Label" parent="unit gui"]
 layout_mode = 2
+text = "Power"
 
 [node name="S" type="Label" parent="unit gui"]
 layout_mode = 2
+text = "Speed"
 
 [node name="HSlider" type="HSlider" parent="unit gui"]
 layout_mode = 2
@@ -54,9 +60,18 @@ max_value = 1.0
 step = 0.01
 scrollable = false
 
+[node name="FSF" type="Label" parent="unit gui"]
+layout_mode = 2
+text = "FSF"
+
+[node name="Collect Button" type="Button" parent="unit gui"]
+layout_mode = 2
+text = "Collect"
+
 [connection signal="value_changed" from="unit gui/HSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="unit gui/HSlider" to="unit gui" method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="unit gui/PSlider" to="." method="_on_p_slider_value_changed"]
 [connection signal="value_changed" from="unit gui/PSlider" to="unit gui" method="_on_p_slider_value_changed"]
 [connection signal="value_changed" from="unit gui/SSlider" to="." method="_on_s_slider_value_changed"]
 [connection signal="value_changed" from="unit gui/SSlider" to="unit gui" method="_on_s_slider_value_changed"]
+[connection signal="pressed" from="unit gui/Collect Button" to="." method="_on_collect_button_pressed"]

@@ -1,8 +1,15 @@
 extends Node2D
 
 func _ready() -> void:
-	print_tree()
+	get_parent().print_tree()
 	var unit_scene = preload("res://unit.tscn")
 	var unit_one = unit_scene.instantiate()
 	add_child(unit_one)
 	unit_one.build_finished()
+	
+	for n in range(10):
+		var unit = unit_scene.instantiate()
+		unit.build_finished()
+		unit.global_position = Vector2(n * 100, 100)
+		add_child(unit)
+		

@@ -29,13 +29,15 @@ script = ExtResource("4_1bvp3")
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_0xm2m")
 
-[node name="GUI" type="VBoxContainer" parent="Camera2D"]
-offset_left = -559.0
-offset_top = -304.0
-offset_right = -506.0
-offset_bottom = -264.0
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GUI" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 63.0
+offset_bottom = 50.0
 script = ExtResource("3_h2yge")
 
-[node name="Energy" type="Label" parent="Camera2D/GUI"]
+[node name="Energy" type="Label" parent="CanvasLayer/GUI"]
 layout_mode = 2
 text = "Energy"

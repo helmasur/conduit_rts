@@ -19,11 +19,13 @@ var target_attack_prop: float
 
 var health_current: float
 
+var fsf: float
+
 var mode: ActionMode = ActionMode.FREE
 var mode_timer: float = 0.0
 
-@export var collect_start_time: float = 3.0
-@export var collect_stop_time: float = 2.0
+@export var collect_start_time: float = 0.0
+@export var collect_stop_time: float = 0.0
 @export var base_collect_rate: float = 5.0
 
 # ---- Nya variabler för selektion och rörelse ----
@@ -67,7 +69,8 @@ func _physics_process(delta: float) -> void:
 
 	# Mjuk övergång för attribut
 	update_proportions(delta)
-
+	
+	fsf = Utils.calc_free_space_factor(global_position)
 	queue_redraw()
 
 func _draw() -> void:
@@ -188,3 +191,9 @@ func set_selected(selected: bool) -> void:
 
 func set_destination(pos: Vector2) -> void:
 	destination = pos
+
+func _on_collect_button_pressed() -> void:
+	if mode == ActionMode.FREE:
+		start_collecting()
+	elif mode == ActionMode.COLLECTING:
+		stop_collecting()

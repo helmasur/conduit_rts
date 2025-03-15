@@ -1,22 +1,62 @@
-[gd_scene load_steps=4 format=3 uid="uid://bxnd7hcypruou"]
+[gd_scene load_steps=5 format=3 uid="uid://bxnd7hcypruou"]
 
-[ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit_body.gd" id="2_davkp"]
+[ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit.gd" id="1_ctwoc"]
+[ext_resource type="Script" uid="uid://d32sydsb8rese" path="res://unit_gui.gd" id="3_5wnup"]
 [ext_resource type="Texture2D" uid="uid://dqcru6qg2a3f0" path="res://icon.svg" id="3_davkp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ctwoc"]
 size = Vector2(32, 32)
 
-[node name="Unit" type="Node2D"]
-
-[node name="unit body" type="CharacterBody2D" parent="."]
+[node name="Unit" type="CharacterBody2D"]
 motion_mode = 1
-script = ExtResource("2_davkp")
-speed = 100
+script = ExtResource("1_ctwoc")
 
-[node name="Sprite2D" type="Sprite2D" parent="unit body"]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_davkp")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="unit body"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
 shape = SubResource("RectangleShape2D_ctwoc")
+
+[node name="unit gui" type="VBoxContainer" parent="."]
+offset_right = 60.0
+offset_bottom = 164.0
+script = ExtResource("3_5wnup")
+
+[node name="E" type="Label" parent="unit gui"]
+layout_mode = 2
+
+[node name="H" type="Label" parent="unit gui"]
+layout_mode = 2
+
+[node name="P" type="Label" parent="unit gui"]
+layout_mode = 2
+
+[node name="S" type="Label" parent="unit gui"]
+layout_mode = 2
+
+[node name="HSlider" type="HSlider" parent="unit gui"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+scrollable = false
+
+[node name="PSlider" type="HSlider" parent="unit gui"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+scrollable = false
+
+[node name="SSlider" type="HSlider" parent="unit gui"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+scrollable = false
+
+[connection signal="value_changed" from="unit gui/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="unit gui/HSlider" to="unit gui" method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="unit gui/PSlider" to="." method="_on_p_slider_value_changed"]
+[connection signal="value_changed" from="unit gui/PSlider" to="unit gui" method="_on_p_slider_value_changed"]
+[connection signal="value_changed" from="unit gui/SSlider" to="." method="_on_s_slider_value_changed"]
+[connection signal="value_changed" from="unit gui/SSlider" to="unit gui" method="_on_s_slider_value_changed"]

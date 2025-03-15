@@ -13,7 +13,7 @@ func _ready() -> void:
 	t.timeout.connect(_change_direction)  # Korrekt sätt att ansluta signalen
 	_change_direction()
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	space = calc_free_space_factor()
 	queue_redraw()
 	move_and_slide()

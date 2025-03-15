@@ -2,7 +2,9 @@ extends Node2D
 
 func _ready() -> void:
 	print_tree()
-	
-	for n in range(10):
-		add_child(get_child(0).duplicate())
-		
+	var unit_scene = preload("res://unit.tscn")
+	for i in range(10):
+		var unit_instance = unit_scene.instantiate()
+		# Justera positionen så att de inte hamnar på exakt samma ställe
+		unit_instance.position = Vector2(50 * i, 0)
+		add_child(unit_instance)

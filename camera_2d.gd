@@ -48,6 +48,8 @@ func _process(delta):
 
 	# Flytta kameran
 	position += direction * move_speed * delta
+	global_position = Utils.wrap_position(global_position)
+
 
 func _input(event):
 	if event is InputEventMouseButton and event.pressed:

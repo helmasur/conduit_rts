@@ -14,6 +14,7 @@ radius = 1000.0
 [node name="unit body" type="CharacterBody2D" parent="."]
 motion_mode = 1
 script = ExtResource("2_davkp")
+speed = 100
 
 [node name="Sprite2D" type="Sprite2D" parent="unit body"]
 scale = Vector2(0.25, 0.25)

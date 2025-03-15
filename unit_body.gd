@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 var space
+@export var speed = 20
 
 func _ready() -> void:
 	add_to_group("units")
@@ -23,7 +24,7 @@ func _draw():
 func _change_direction():
 	velocity = Vector2(randi_range(-100, 100), randi_range(-100, 100))
 	velocity = velocity.normalized()
-	velocity *= 20
+	velocity *= speed
 
 func calc_free_space_factor() -> float:
 	var sp = 0.0

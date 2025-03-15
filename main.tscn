@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://4ij7u4ntmvdc"]
+[gd_scene load_steps=3 format=3 uid="uid://4ij7u4ntmvdc"]
 
 [ext_resource type="PackedScene" uid="uid://bxnd7hcypruou" path="res://unit.tscn" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_0xm2m"]
 
 [node name="Main" type="Node2D"]
 
@@ -36,3 +37,7 @@ position = Vector2(293, 96)
 
 [node name="Unit11" parent="." instance=ExtResource("1_ig7tw")]
 position = Vector2(170, 282)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+script = ExtResource("2_0xm2m")

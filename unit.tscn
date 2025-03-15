@@ -1,13 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bxnd7hcypruou"]
+[gd_scene load_steps=4 format=3 uid="uid://bxnd7hcypruou"]
 
-[ext_resource type="Script" uid="uid://ypydevub7exv" path="res://unit_gravity.gd" id="1_ctwoc"]
 [ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit_body.gd" id="2_davkp"]
 [ext_resource type="Texture2D" uid="uid://dqcru6qg2a3f0" path="res://icon.svg" id="3_davkp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ctwoc"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_5wnup"]
-radius = 1000.0
+size = Vector2(32, 32)
 
 [node name="Unit" type="Node2D"]
 
@@ -23,16 +20,3 @@ texture = ExtResource("3_davkp")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="unit body"]
 visible = false
 shape = SubResource("RectangleShape2D_ctwoc")
-
-[node name="unit gravity" type="Area2D" parent="."]
-gravity_space_override = 1
-gravity_point = true
-gravity_point_unit_distance = 100.0
-gravity_point_center = Vector2(0, 0)
-gravity_direction = Vector2(0, 0)
-gravity = 100.0
-script = ExtResource("1_ctwoc")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="unit gravity"]
-modulate = Color(0.82606, 0.82606, 0.82606, 1)
-shape = SubResource("CircleShape2D_5wnup")

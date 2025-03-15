@@ -19,7 +19,7 @@ func _physics_process(delta):
 	move_and_slide()
 
 func _draw():
-	draw_circle(Vector2.ZERO, space, Color.RED, false, 1, true)
+	draw_circle(Vector2.ZERO, space, Color.RED, false, 2, true)
 
 func _change_direction():
 	velocity = Vector2(randi_range(-100, 100), randi_range(-100, 100))

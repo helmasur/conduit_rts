@@ -16,6 +16,7 @@ func _ready():
 	update_zoom()  # Sätt startzoom och hastighet
 
 func _process(delta):
+	screen_size = get_viewport_rect().size
 	var direction := Vector2.ZERO
 
 	# Tangentbordsstyrning

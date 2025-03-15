@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://bxnd7hcypruou"]
+
+[ext_resource type="Script" uid="uid://ypydevub7exv" path="res://unit_gravity.gd" id="1_ctwoc"]
+[ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit_body.gd" id="2_davkp"]
+[ext_resource type="Texture2D" uid="uid://dqcru6qg2a3f0" path="res://icon.svg" id="3_davkp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5wnup"]
+radius = 1000.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ctwoc"]
+
+[node name="Unit" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_davkp")
+
+[node name="unit gravity" type="Area2D" parent="."]
+visible = false
+script = ExtResource("1_ctwoc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="unit gravity"]
+modulate = Color(0.82606, 0.82606, 0.82606, 1)
+shape = SubResource("CircleShape2D_5wnup")
+
+[node name="unit body" type="CharacterBody2D" parent="."]
+motion_mode = 1
+script = ExtResource("2_davkp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="unit body"]
+visible = false
+shape = SubResource("RectangleShape2D_ctwoc")

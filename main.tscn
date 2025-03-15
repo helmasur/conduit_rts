@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://4ij7u4ntmvdc"]
+[gd_scene load_steps=8 format=3 uid="uid://4ij7u4ntmvdc"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://bcp3gus4vjqtc" path="res://gui.gd" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://cnd6yet61fs7x" path="res://test.gd" id="4_1bvp3"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
 colors = PackedColorArray(0.169245, 0.169245, 0.169245, 1, 0.244776, 0.244776, 0.244776, 1)
@@ -21,6 +22,9 @@ script = ExtResource("1_h2yge")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
+
+[node name="Test" type="Node2D" parent="."]
+script = ExtResource("4_1bvp3")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_0xm2m")

@@ -5,7 +5,7 @@ func _ready() -> void:
 	$PSlider.value = get_parent().target_attack_prop
 	$SSlider.value = get_parent().target_speed_prop
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	$E.text = str(round(get_parent().total_energy))
 	$H.text = str(round(get_parent().health_current))
 	$P.text = str(round(get_parent().get_attack_value()))

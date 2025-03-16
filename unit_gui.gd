@@ -6,10 +6,10 @@ func _ready() -> void:
 	$SSlider.value = get_parent().target_speed_prop
 
 func _process(_delta: float) -> void:
-	$E.text = str(round(get_parent().total_energy))
-	$H.text = str(round(get_parent().health_current))
-	$P.text = str(round(get_parent().get_attack_value()))
-	$S.text = str(round(get_parent().get_speed_value()))
+	$E.text = str(get_parent().total_energy)
+	$H.text = str(get_parent().health_current)
+	$P.text = str(get_parent().get_attack_value())
+	$S.text = str(get_parent().get_speed_value())
 	$FSF.text = "%.3f" % get_parent().fsf
 
 	

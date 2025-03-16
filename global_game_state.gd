@@ -1,3 +1,3 @@
 extends Node
 
-var player_energy = 0
+var player_energy = 10000

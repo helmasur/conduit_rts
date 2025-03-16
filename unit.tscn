@@ -68,6 +68,10 @@ text = "FSF"
 layout_mode = 2
 text = "Collect"
 
+[node name="Build Button" type="Button" parent="unit gui"]
+layout_mode = 2
+text = "Build"
+
 [connection signal="value_changed" from="unit gui/HSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="unit gui/HSlider" to="unit gui" method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="unit gui/PSlider" to="." method="_on_p_slider_value_changed"]
@@ -75,3 +79,4 @@ text = "Collect"
 [connection signal="value_changed" from="unit gui/SSlider" to="." method="_on_s_slider_value_changed"]
 [connection signal="value_changed" from="unit gui/SSlider" to="unit gui" method="_on_s_slider_value_changed"]
 [connection signal="pressed" from="unit gui/Collect Button" to="." method="_on_collect_button_pressed"]
+[connection signal="pressed" from="unit gui/Build Button" to="." method="_on_build_button_pressed"]

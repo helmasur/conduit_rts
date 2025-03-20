@@ -31,16 +31,17 @@ func _ready() -> void:
 	set_process_input(true)
 
 func _update_triangle_vertices() -> void:
-	var rect_size = get_rect().size
+	#var rect_size = get_rect().size
+	var rect_size = _get_minimum_size()
 	A = Vector2(0, 0)
 	B = Vector2(rect_size.x, 0)
 	C = Vector2(rect_size.x * 0.5, rect_size.y)
 
 func _get_minimum_size() -> Vector2:
-	var aspect_ratio = 0.866  
+	var aspect_ratio = 0.866
 	var min_w = custom_minimum_size.x
 	var min_h = min_w * aspect_ratio
-	if min_h < custom_minimum_size.y:
+	if min_h > custom_minimum_size.y:
 		min_h = custom_minimum_size.y
 		min_w = min_h / aspect_ratio
 	return Vector2(min_w, min_h)

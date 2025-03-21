@@ -1,7 +1,7 @@
 extends Camera2D
 
-@export var base_move_speed: float = 500.0  # Grundhastighet i pixlar per sekund
-@export var base_edge_scroll_speed: float = 400.0  # Grundhastighet för muskantrörelse
+@export var base_move_speed: float = 0.0  # Grundhastighet i pixlar per sekund
+@export var base_edge_scroll_speed: float = 0.0  # Grundhastighet för muskantrörelse
 @export var edge_margin: int = 20  # Hur nära kanten musen måste vara
 
 var zoom_levels: Array = [2.0, 1.0, 0.5, 0.25, 0.125, 0.0625]  # Zoomsteg

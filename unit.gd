@@ -8,16 +8,22 @@ class_name Unit
 #const UnitCollect = preload("res://UnitCollect.gd")
 #const UnitBuild = preload("res://UnitBuild.gd")
 
-@export var total_energy: float = 100.0
+var target_energy: float
+var energy: float = 100.0
+var health: float
+var health_current: float = 1
+var power: float
+var speed: float
+
 @export var health_prop: float = 0.5
+@export var power_prop: float = 0.2
 @export var speed_prop: float = 0.3
-@export var attack_prop: float = 0.2
+
 
 var target_health_prop: float
+var target_power_prop: float
 var target_speed_prop: float
-var target_attack_prop: float
 
-var health_current: float = 1
 var fsf: float
 
 var mode: int = UnitShared.ActionMode.FREE
@@ -35,7 +41,7 @@ var mode_timer: float = 0.0
 @export var build_transfer_rate: float = 10.0
 @export var final_health_prop: float = 0.5
 @export var final_speed_prop: float = 0.3
-@export var final_attack_prop: float = 0.2
+@export var final_power_prop: float = 0.2
 
 var building_unit: CharacterBody2D = null
 
@@ -45,7 +51,7 @@ var destination: Vector2
 func _ready() -> void:
 	target_health_prop = health_prop
 	target_speed_prop = speed_prop
-	target_attack_prop = attack_prop
+	target_power_prop = power_prop
 	UnitAttributes.normalize_proportions(self)
 	add_to_group("units")
 	destination = global_position
@@ -86,6 +92,9 @@ func handle_state_machine(delta: float) -> void:
 
 		UnitShared.ActionMode.BUILD_STARTING, UnitShared.ActionMode.BUILDING, UnitShared.ActionMode.BUILD_STOPPING:
 			UnitBuild.handle_build_state(self, delta)
+			
+		UnitShared.ActionMode.UNDER_CONSTRUCTION:
+			pass
 
 		_:
 			# ActionMode.FREE eller annat
@@ -93,6 +102,10 @@ func handle_state_machine(delta: float) -> void:
 
 func set_selected(selected: bool) -> void:
 	is_selected = selected
+	if selected:
+		self.add_to_group("selected_units")
+	else:
+		self.remove_from_group("selected_units")
 
 func set_destination(pos: Vector2) -> void:
 	destination = pos
@@ -126,12 +139,3 @@ func _on_build_button_pressed() -> void:
 		start_build()
 	elif mode == UnitShared.ActionMode.BUILDING:
 		stop_build()
-
-func _on_h_slider_value_changed(value: float) -> void:
-	target_health_prop = value
-
-func _on_s_slider_value_changed(value: float) -> void:
-	target_speed_prop = value
-
-func _on_p_slider_value_changed(value: float) -> void:
-	target_attack_prop = value

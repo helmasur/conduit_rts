@@ -27,7 +27,7 @@ func _ready() -> void:
 	_update_triangle_vertices()
 	# Startposition i mitten
 	circle_pos = (A + B + C) / 3.0
-	set_mouse_filter(Control.MOUSE_FILTER_PASS)
+	#set_mouse_filter(Control.MOUSE_FILTER_PASS)
 	set_process_input(true)
 
 func _update_triangle_vertices() -> void:
@@ -55,6 +55,7 @@ func _gui_input(event: InputEvent) -> void:
 		queue_redraw()
 
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		print("tri klick")
 		if event.pressed:
 			if _point_in_triangle(event.position):
 				dragging = true
@@ -138,4 +139,25 @@ func _set_color_b(value: Color) -> void:
 
 func _set_color_c(value: Color) -> void:
 	color_c = value
+	queue_redraw()
+
+func set_handle(h: float, p: float, s: float) -> void:
+	var total = h + s + p
+	if total == 0:
+		return  # Undvik division med noll
+
+	# Normalisera så att h + s + p = 1
+	var u = h / total
+	var v = s / total
+	var w = p / total
+
+	# Flytta handtaget till rätt position i triangeln
+	circle_pos = _bary_to_point(u, v, w)
+
+	# Uppdatera interna värden
+	current_h = u
+	current_s = v
+	current_p = w
+
+	emit_signal("attribute_changed", current_h, current_p, current_s)
 	queue_redraw()

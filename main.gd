@@ -14,26 +14,30 @@ func _unhandled_input(event: InputEvent) -> void:
 				_handle_right_click(click_pos)
 
 func _handle_left_click(world_pos: Vector2) -> void:
-	# 1) Avmarkera eventuell tidigare vald enhet
-	if selected_unit:
-		selected_unit.set_selected(false)
-		selected_unit = null
-
-	# 2) Skapa query-objekt för punktintersektion
+	# Skapa query-objekt för punktintersektion
 	var space_state = get_world_2d().direct_space_state
 	var query = PhysicsPointQueryParameters2D.new()
 	query.position = world_pos
-
-	# 3) Kör intersect_point
+	
+	# Kör intersect_point
 	var results = space_state.intersect_point(query)
 	if results.size() > 0:
 		# Ta den första träffen
 		var hit = results[0]
 		var collider = hit.collider
 		# Om den collider vi träffade är en enhet, markera den
+		if collider is Control:
+			return
 		if collider is CharacterBody2D:
+			if selected_unit:
+				selected_unit.set_selected(false)
 			collider.set_selected(true)
 			selected_unit = collider
+	else:
+		for unit in get_tree().get_nodes_in_group("selected_units"):
+			unit.set_selected(false)
+			selected_unit = null
+		
 
 func _handle_right_click(world_pos: Vector2) -> void:
 	# Be den valda enheten att förflytta sig

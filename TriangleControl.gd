@@ -15,8 +15,8 @@ var point_pos: Vector2 = Vector2.ZERO
 var dragging: bool = false
 var highlight: bool = false  
 var current_h: float = 0.33
-var current_s: float = 0.33
 var current_p: float = 0.34
+var current_s: float = 0.33
 
 # Hörn på triangeln (beräknas i _ready)
 var A: Vector2

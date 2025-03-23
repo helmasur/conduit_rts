@@ -19,7 +19,6 @@ var speed: float
 @export var power_prop: float = 0.2
 @export var speed_prop: float = 0.3
 
-
 var target_health_prop: float
 var target_power_prop: float
 var target_speed_prop: float
@@ -27,24 +26,18 @@ var target_speed_prop: float
 var fsf: float
 
 var mode: int = UnitShared.ActionMode.FREE
-var mode_timer: float = 0.0
-
-@export var collect_start_time: float = 0.0
-@export var collect_stop_time: float = 0.0
+var conduit_mode: int = UnitShared.ConduitMode.COLLECTING
 
 @export var base_collect_rate: float = 5.0
 @export var build_transfer_rate: float = 5.0
 
-@export var build_start_time: float = 0.0
-@export var build_stop_time: float = 0.0
-@export var build_cost: float = 50.0
-@export var build_scene: PackedScene = preload("res://unit.tscn")
-@export var build_target_energy: float = 50.0
-@export var final_health_prop: float = 0.5
-@export var final_speed_prop: float = 0.3
-@export var final_power_prop: float = 0.2
+@export var unit_scene: PackedScene = preload("res://unit.tscn")
 
-var building_unit: CharacterBody2D = null
+var nearby_units: Array = []
+var build_queue: Array = []
+var unit_to_build: Unit = null
+var unit_to_attack: Unit = null
+var unit_to_repair: Unit = null
 
 var is_selected: bool = false
 var destination: Vector2
@@ -56,40 +49,39 @@ func _ready() -> void:
 	UnitAttributes.normalize_proportions(self)
 	add_to_group("units")
 	destination = global_position
+	$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
 
 func _physics_process(delta: float) -> void:
-	#handle_state_machine(delta)
+	handle_state_machine(delta)
 	if speed_prop < 0.01: destination = global_position
 	
 	if energy < target_energy:
+		# Enheten ej färdigbyggd
 		mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
-		add_to_group("unfinished")
-	elif health_prop > 0.99:
-		mode = UnitShared.ActionMode.CONDUIT
-		var unfinished_units = get_tree().get_nodes_in_group("unfinished")
-		### lägg in avståndskoll!!
-		if len(unfinished_units) > 0:
-			var nearest_unfinished = unfinished_units[0]
-			for unit in unfinished_units:
-				var min_d = global_position.distance_to(nearest_unfinished.global_position)
-				var d = global_position.distance_to(unit.global_position)
-				if d < min_d:
-					nearest_unfinished = unit
-			var transaction = build_transfer_rate * delta / fsf
-			var diff = nearest_unfinished.target_energy - nearest_unfinished.energy
-			if diff > transaction:
-				GlobalGameState.player_energy -= transaction
-				nearest_unfinished.energy += transaction
-			else:
-				GlobalGameState.player_energy -= diff
-				nearest_unfinished.energy += diff
+		#add_to_group("unfinished")
 		
-				
-		var collected_amount = fsf * base_collect_rate * delta
-		GlobalGameState.player_energy += collected_amount
+	elif health_prop > 0.99:
+		# Conduit mode
+		mode = UnitShared.ActionMode.CONDUIT
+		
 	else:
 		mode = UnitShared.ActionMode.FREE
-		remove_from_group("unfinished")
+		
+		#var transaction = build_transfer_rate * delta / fsf
+		#var diff = nearest_unfinished.target_energy - nearest_unfinished.energy
+		#if diff > transaction:
+			#GlobalGameState.player_energy -= transaction
+			#nearest_unfinished.energy += transaction
+		#else:
+			#GlobalGameState.player_energy -= diff
+			#nearest_unfinished.energy += diff
+		
+				
+		#var collected_amount = fsf * base_collect_rate * delta
+		#GlobalGameState.player_energy += collected_amount
+	#else:
+		#mode = UnitShared.ActionMode.FREE
+		#remove_from_group("unfinished")
 	
 	if mode == UnitShared.ActionMode.FREE:
 		var dist = destination.distance_to(global_position)
@@ -104,7 +96,10 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		move_and_slide()
 
-	global_position = Utils.wrap_position(global_position)
+	var wrap_pos = Utils.wrap_position(global_position)
+	if global_position != wrap_pos:
+		global_position = wrap_pos
+		destination = Utils.wrap_position(destination)
 
 	UnitAttributes.update_proportions(self, delta)
 
@@ -116,15 +111,19 @@ func _draw() -> void:
 		var size = 30.0
 		var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
 		draw_rect(rect, Color(0,1,0), false, 2.0)
-		draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, true)
+		draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
 
 func handle_state_machine(delta: float) -> void:
 	match mode:
-		UnitShared.ActionMode.COLLECT_STARTING,UnitShared.ActionMode.COLLECTING, UnitShared.ActionMode.COLLECT_STOPPING:
-			UnitCollect.handle_collect_state(self, delta)
-
-		UnitShared.ActionMode.BUILD_STARTING, UnitShared.ActionMode.BUILDING, UnitShared.ActionMode.BUILD_STOPPING:
-			UnitBuild.handle_build_state(self, delta)
+		UnitShared.ActionMode.CONDUIT:
+			match conduit_mode:
+				UnitShared.ConduitMode.COLLECTING:
+					#UnitCollect.handle_collect_state(self, delta)
+					var space_factor = Utils.calc_free_space_factor(global_position)
+					var collected_amount = space_factor * base_collect_rate * delta
+					GlobalGameState.player_energy += collected_amount
+				UnitShared.ConduitMode.BUILDING:
+					UnitBuild.handle_build_state(self, delta)
 			
 		UnitShared.ActionMode.UNDER_CONSTRUCTION:
 			pass
@@ -145,17 +144,9 @@ func set_selected(selected: bool) -> void:
 func set_destination(pos: Vector2) -> void:
 	destination = pos
 
-func start_collecting() -> void:
-	UnitCollect.start_collecting(self)
-
-func stop_collecting() -> void:
-	UnitCollect.stop_collecting(self)
-
-func start_build() -> void:
-	UnitBuild.start_build(self)
-
-func stop_build() -> void:
-	UnitBuild.stop_build(self)
+func start_build(e: float, h: float, p: float, s: float) -> void:
+	if e > 0:
+		UnitBuild.start_build(self, e, h, p, s)
 
 func apply_damage(amount: float) -> void:
 	UnitAttributes.apply_damage(self, amount)
@@ -163,14 +154,14 @@ func apply_damage(amount: float) -> void:
 func build_finished() -> void:
 	UnitAttributes.build_finished(self)
 
-func _on_collect_button_pressed() -> void:
-	if mode == UnitShared.ActionMode.FREE:
-		start_collecting()
-	elif mode == UnitShared.ActionMode.COLLECTING:
-		stop_collecting()
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body is Unit and body != self:
+		nearby_units.append(body)
+	else: return
 
-func _on_build_button_pressed() -> void:
-	if mode == UnitShared.ActionMode.FREE:
-		start_build()
-	elif mode == UnitShared.ActionMode.BUILDING:
-		stop_build()
+func _on_area_2d_body_exited(body: Node2D) -> void:
+	if body is Unit:
+		nearby_units.erase(body)
+	if unit_to_attack == body: unit_to_attack = null
+	if unit_to_repair == body: unit_to_repair = null
+	

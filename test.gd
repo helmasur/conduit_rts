@@ -1,7 +1,7 @@
 extends Node2D
 
 func _ready() -> void:
-	#get_parent().print_tree()
+	get_parent().print_tree()
 	var unit_scene = preload("res://unit.tscn")
 	#var unit_one = unit_scene.instantiate()
 	#add_child(unit_one)

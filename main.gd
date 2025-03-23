@@ -1,6 +1,7 @@
 extends Node2D
 
 var selected_unit: Node = null
+var tricon_h: float = .33
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:

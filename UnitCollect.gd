@@ -11,9 +11,9 @@ class_name UnitCollect
 		#unit.mode = UnitShared.ActionMode.COLLECT_STOPPING
 		#unit.mode_timer = unit.collect_stop_time
 
-static func handle_collect_state(unit: Unit, delta: float) -> void:
-	match unit.conduit_mode:
-		UnitShared.ConduitMode.COLLECTING:
-			var space_factor = Utils.calc_free_space_factor(unit.global_position)
-			var collected_amount = space_factor * unit.base_collect_rate * delta
-			GlobalGameState.player_energy += collected_amount
+#static func handle_collect_state(unit: Unit, delta: float) -> void:
+	#match unit.conduit_mode:
+		#UnitShared.ConduitMode.COLLECTING:
+			#var space_factor = Utils.calc_free_space_factor(unit.global_position)
+			#var collected_amount = space_factor * unit.base_collect_rate * delta
+			#GlobalGameState.player_energy += collected_amount

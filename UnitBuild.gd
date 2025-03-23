@@ -48,7 +48,7 @@ static func handle_build_state(unit: Unit, delta: float) -> void:
 				if unit.unit_to_build.energy >= unit.unit_to_build.target_energy:
 					# Unit är redo
 					#UnitAttributes.normalize_proportions(unit.unit_to_build)
-					unit.unit_to_build.mode = UnitShared.ActionMode.FREE
+					#unit.unit_to_build.mode = UnitShared.ActionMode.FREE
 					#unit.unit_to_build.build_finished()
 					unit.unit_to_build = null
 					unit.mode = UnitShared.ConduitMode.COLLECTING

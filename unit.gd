@@ -18,6 +18,7 @@ var speed: float
 @export var health_prop: float = 0.5
 @export var power_prop: float = 0.2
 @export var speed_prop: float = 0.3
+@export var speed_factor: float = 1
 
 var target_health_prop: float
 var target_power_prop: float
@@ -46,7 +47,7 @@ func _ready() -> void:
 	target_health_prop = health_prop
 	target_speed_prop = speed_prop
 	target_power_prop = power_prop
-	UnitAttributes.normalize_proportions(self)
+	#UnitAttributes.normalize_proportions(self)
 	add_to_group("units")
 	destination = global_position
 	$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
@@ -85,10 +86,19 @@ func _physics_process(delta: float) -> void:
 	
 	if mode == UnitShared.ActionMode.FREE:
 		var dist = destination.distance_to(global_position)
+		var speed = UnitAttributes.get_speed_value(self)
 		if dist > 2.0:
 			var dir = (destination - global_position).normalized()
-			velocity = dir * UnitAttributes.get_speed_value(self)
-			move_and_slide()
+			velocity = dir * speed
+			
+			# UNDERSÖK om vi kommer passera destinationen under detta frame
+			var frame_movement = velocity * delta
+			if frame_movement.length() >= dist:
+				# Vi skulle överskjuta -> hoppa till destination och stoppa
+				global_position = destination
+				velocity = Vector2.ZERO
+			else:
+				move_and_slide()
 		else:
 			velocity = Vector2.ZERO
 			move_and_slide()
@@ -150,9 +160,6 @@ func start_build(e: float, h: float, p: float, s: float) -> void:
 
 func apply_damage(amount: float) -> void:
 	UnitAttributes.apply_damage(self, amount)
-
-func build_finished() -> void:
-	UnitAttributes.build_finished(self)
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	if body is Unit and body != self:

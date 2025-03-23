@@ -27,16 +27,15 @@ func toroid_distance(p1: Vector2, p2: Vector2, world_size: Vector2) -> float:
 
 # Funktion för att räkna ut ett "free space factor" baserat på avståndet till andra enheter,
 # anpassat för en toroid värld (2048x2048).
-func calc_free_space_factor(globpos: Vector2) -> float:
-	var fsf = 0.0
-	var group_name = "units"  # Ändra till den grupp som innehåller dina enheter
-	var members = get_tree().get_nodes_in_group(group_name)
-	var world_size = Vector2(2048, 2048)
+func calc_free_space_factor(pos: Vector2) -> float:
+	var dist_max = sqrt(2.0) * GlobalGameState.world_size.x / 2.0
+	var fsf = 1.0
+	var units = get_tree().get_nodes_in_group("units")
 	
-	for member in members:
-		if globpos != member.global_position:  # Hoppa över oss själva
-			var d = toroid_distance(globpos, member.global_position, world_size)
-			fsf += 1.0 / d
+	for unit in units:
+		if pos != unit.global_position:  # Hoppa över oss själva
+			var dist = toroid_distance(pos, unit.global_position, GlobalGameState.world_size)
+			fsf += 1 - (dist / dist_max)
 	fsf = 1.0 / fsf
-	fsf = pow(fsf, 1.5) / 2.0
+	fsf = sin(fsf*PI/2.0)
 	return fsf

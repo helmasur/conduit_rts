@@ -8,8 +8,8 @@ class_name Unit
 #const UnitCollect = preload("res://UnitCollect.gd")
 #const UnitBuild = preload("res://UnitBuild.gd")
 
-var target_energy: float
-var energy: float = 100.0
+var target_energy: float = 0.0
+var energy: float = 0.0
 var health: float
 var health_current: float = 1
 var power: float
@@ -31,14 +31,15 @@ var mode_timer: float = 0.0
 
 @export var collect_start_time: float = 0.0
 @export var collect_stop_time: float = 0.0
+
 @export var base_collect_rate: float = 5.0
+@export var build_transfer_rate: float = 5.0
 
 @export var build_start_time: float = 0.0
 @export var build_stop_time: float = 0.0
 @export var build_cost: float = 50.0
 @export var build_scene: PackedScene = preload("res://unit.tscn")
 @export var build_target_energy: float = 50.0
-@export var build_transfer_rate: float = 10.0
 @export var final_health_prop: float = 0.5
 @export var final_speed_prop: float = 0.3
 @export var final_power_prop: float = 0.2
@@ -57,8 +58,39 @@ func _ready() -> void:
 	destination = global_position
 
 func _physics_process(delta: float) -> void:
-	handle_state_machine(delta)
-
+	#handle_state_machine(delta)
+	if speed_prop < 0.01: destination = global_position
+	
+	if energy < target_energy:
+		mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
+		add_to_group("unfinished")
+	elif health_prop > 0.99:
+		mode = UnitShared.ActionMode.CONDUIT
+		var unfinished_units = get_tree().get_nodes_in_group("unfinished")
+		### lägg in avståndskoll!!
+		if len(unfinished_units) > 0:
+			var nearest_unfinished = unfinished_units[0]
+			for unit in unfinished_units:
+				var min_d = global_position.distance_to(nearest_unfinished.global_position)
+				var d = global_position.distance_to(unit.global_position)
+				if d < min_d:
+					nearest_unfinished = unit
+			var transaction = build_transfer_rate * delta / fsf
+			var diff = nearest_unfinished.target_energy - nearest_unfinished.energy
+			if diff > transaction:
+				GlobalGameState.player_energy -= transaction
+				nearest_unfinished.energy += transaction
+			else:
+				GlobalGameState.player_energy -= diff
+				nearest_unfinished.energy += diff
+		
+				
+		var collected_amount = fsf * base_collect_rate * delta
+		GlobalGameState.player_energy += collected_amount
+	else:
+		mode = UnitShared.ActionMode.FREE
+		remove_from_group("unfinished")
+	
 	if mode == UnitShared.ActionMode.FREE:
 		var dist = destination.distance_to(global_position)
 		if dist > 2.0:
@@ -84,6 +116,7 @@ func _draw() -> void:
 		var size = 30.0
 		var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
 		draw_rect(rect, Color(0,1,0), false, 2.0)
+		draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, true)
 
 func handle_state_machine(delta: float) -> void:
 	match mode:
@@ -99,6 +132,8 @@ func handle_state_machine(delta: float) -> void:
 		_:
 			# ActionMode.FREE eller annat
 			pass
+
+	
 
 func set_selected(selected: bool) -> void:
 	is_selected = selected

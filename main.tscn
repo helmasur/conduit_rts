@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://4ij7u4ntmvdc"]
+[gd_scene load_steps=13 format=3 uid="uid://4ij7u4ntmvdc"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_0xm2m"]
@@ -18,17 +18,14 @@ height = 2048
 color_ramp = SubResource("Gradient_0xm2m")
 noise = SubResource("FastNoiseLite_h2yge")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2yge"]
-bg_color = Color(0.1173, 0.30056, 0.51, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
-bg_color = Color(0.51, 0.1173, 0.1173, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7mycd"]
 bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_272bh"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(0, 0.540232, 0.953912, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
+bg_color = Color(0.51, 0.1173, 0.1173, 1)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_h2yge")
@@ -89,10 +86,22 @@ layout_mode = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Attributes"]
 layout_mode = 2
 
-[node name="Energy" type="Label" parent="CanvasLayer/GUI/Attributes/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GUI/Attributes/VBoxContainer"]
+layout_mode = 2
+
+[node name="Energy_prog" type="ProgressBar" parent="CanvasLayer/GUI/Attributes/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_h2yge")
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_7mycd")
+theme_override_styles/fill = SubResource("StyleBoxFlat_272bh")
+max_value = 1.0
+value = 0.5
+show_percentage = false
+
+[node name="Energy" type="Label" parent="CanvasLayer/GUI/Attributes/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
 text = "Unit Energy:"
 
 [node name="Health" type="ProgressBar" parent="CanvasLayer/GUI/Attributes/VBoxContainer"]
@@ -124,23 +133,16 @@ layout_mode = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Buttons"]
 layout_mode = 2
 
-[node name="Transform button" type="Button" parent="CanvasLayer/GUI/Buttons/VBoxContainer"]
+[node name="Transform_button" type="Button" parent="CanvasLayer/GUI/Buttons/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Transform"
-
-[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer/GUI/Buttons/VBoxContainer"]
-custom_minimum_size = Vector2(0, 7)
-layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_7mycd")
-theme_override_styles/fill = SubResource("StyleBoxFlat_272bh")
-max_value = 1.0
-value = 0.5
-show_percentage = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/Buttons/VBoxContainer"]
 layout_mode = 2
 
 [node name="Conduit" type="Button" parent="CanvasLayer/GUI/Buttons/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Conduit"
@@ -198,6 +200,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "f"
 
-[connection signal="pressed" from="CanvasLayer/GUI/Buttons/VBoxContainer/Transform button" to="CanvasLayer/GUI" method="_on_transform_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/GUI/Buttons/VBoxContainer/Transform_button" to="CanvasLayer/GUI" method="_on_transform_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/GUI/Buttons/VBoxContainer/HBoxContainer/Conduit" to="CanvasLayer/GUI" method="_on_conduit_pressed"]
 [connection signal="pressed" from="CanvasLayer/GUI/Buttons/VBoxContainer/HBoxContainer/Pop" to="CanvasLayer/GUI" method="_on_pop_pressed"]

@@ -11,6 +11,7 @@ signal attribute_changed(h: float, s: float, p: float)
 
 # Interna variabler
 var circle_pos: Vector2 = Vector2.ZERO
+var point_pos: Vector2 = Vector2.ZERO
 var dragging: bool = false
 var highlight: bool = false  
 var current_h: float = 0.33
@@ -55,7 +56,6 @@ func _gui_input(event: InputEvent) -> void:
 		queue_redraw()
 
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		print("tri klick")
 		if event.pressed:
 			if _point_in_triangle(event.position):
 				dragging = true
@@ -122,10 +122,14 @@ func _draw_triangle_gradient() -> void:
 func _draw_circle() -> void:
 	if highlight:
 		draw_circle(circle_pos, circle_radius, Color(1,1,1,0.4))
-	draw_circle(circle_pos, circle_radius, Color.BLACK, false, 2.0)
+	draw_circle(circle_pos, circle_radius, Color.BLACK, false, 1.5, true)
+	
+func _draw_point() -> void:
+	draw_circle(point_pos, 1.5, Color.BLACK, true, -1.0, true)
 
 func _draw() -> void:
 	_draw_triangle_gradient()
+	_draw_point()
 	_draw_circle()
 
 # Gör att vi kan ändra färger i Inspector och se ändringen direkt
@@ -160,4 +164,19 @@ func set_handle(h: float, p: float, s: float) -> void:
 	current_p = w
 
 	emit_signal("attribute_changed", current_h, current_p, current_s)
+	queue_redraw()
+
+func set_point(h: float, p: float, s: float) -> void:
+	var total = h + s + p
+	if total == 0:
+		return  # Undvik division med noll
+	
+	# Normalisera så att h + s + p = 1
+	var u = h / total
+	var v = s / total
+	var w = p / total
+	
+	# Flytta handtaget till rätt position i triangeln
+	point_pos = _bary_to_point(u, v, w)
+	
 	queue_redraw()

@@ -36,7 +36,8 @@ func _handle_left_click(world_pos: Vector2) -> void:
 				selected_unit.set_selected(false)
 			collider.set_selected(true)
 			selected_unit = collider
-			%TriCon.set_handle(selected_unit.health_prop, selected_unit.power_prop, selected_unit.speed_prop)
+			%TriCon.set_point(selected_unit.health_prop, selected_unit.power_prop, selected_unit.speed_prop)
+			%TriCon.set_handle(selected_unit.target_health_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
 	else:
 		for unit in get_tree().get_nodes_in_group("selected_units"):
 			unit.set_selected(false)

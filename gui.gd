@@ -10,16 +10,24 @@ func _process(_delta: float) -> void:
 	selected_units = get_tree().get_nodes_in_group("selected_units")
 	selected_units_count = len(selected_units)
 	
-	if selected_units_count == 1: selected_unit = selected_units[0]
+	if selected_units_count == 1:
+		selected_unit = selected_units[0]
+		%Transform_button.disabled = false
+		%Conduit.disabled = false
 	else:
+		%Conduit.disabled = true
+		%Transform_button.disabled = true
 		%Pop.disabled = true
 	if selected_unit:
-		if selected_unit.health_prop > 0.999:
+		if selected_unit.health_prop > 0.99:
 			%Pop.disabled = false
+		else: %Pop.disabled = true
 		%Energy.text = "%.3f" % selected_unit.energy
+		%Energy_prog.value = selected_unit.energy / selected_unit.target_energy
 		%Health.value = selected_unit.health_current / selected_unit.health
 		%Power.text = "%.3f" % selected_unit.power
 		%Speed.text = "%.3f" % selected_unit.speed
+		%TriCon.set_point(selected_unit.health_prop, selected_unit.power_prop, selected_unit.speed_prop)
 
 		
 	else:
@@ -42,16 +50,18 @@ func _on_conduit_pressed() -> void:
 		unit.target_health_prop = 1
 		unit.target_power_prop = 0
 		unit.target_speed_prop = 0
+	%TriCon.set_handle(selected_unit.target_health_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
 
 func _on_pop_pressed() -> void:
 	var new_unit = unit_scene.instantiate() as CharacterBody2D
 	new_unit.global_position = selected_unit.global_position + Vector2(50, 0)
 	selected_unit.get_tree().current_scene.add_child(new_unit)
 	new_unit.target_energy = float(%Pop_energy.text)
+	GlobalGameState.player_energy -= new_unit.target_energy
 	new_unit.health_prop = %TriCon.current_h
 	new_unit.target_health_prop = %TriCon.current_h
 	new_unit.power_prop = %TriCon.current_p
 	new_unit.target_power_prop = %TriCon.current_p
 	new_unit.speed_prop = %TriCon.current_s
 	new_unit.target_speed_prop = %TriCon.current_s
-	new_unit.mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
+	

@@ -1,6 +1,6 @@
 extends Camera2D
 
-@export var base_move_speed: float = 0.0  # Grundhastighet i pixlar per sekund
+@export var base_move_speed: float = 500.0  # Grundhastighet i pixlar per sekund
 @export var base_edge_scroll_speed: float = 0.0  # Grundhastighet för muskantrörelse
 @export var edge_margin: int = 20  # Hur nära kanten musen måste vara
 
@@ -17,38 +17,43 @@ func _ready():
 
 func _process(delta):
 	screen_size = get_viewport_rect().size
-	var direction := Vector2.ZERO
+
+	var move_dir := Vector2.ZERO
+	var edge_dir := Vector2.ZERO
 
 	# Tangentbordsstyrning
 	if Input.is_action_pressed("move_up"):
-		direction.y -= 1
+		move_dir.y -= 1
 	if Input.is_action_pressed("move_down"):
-		direction.y += 1
+		move_dir.y += 1
 	if Input.is_action_pressed("move_left"):
-		direction.x -= 1
+		move_dir.x -= 1
 	if Input.is_action_pressed("move_right"):
-		direction.x += 1
+		move_dir.x += 1
 
-	# Normalisera så diagonala rörelser inte blir snabbare
-	if direction != Vector2.ZERO:
-		direction = direction.normalized()
+	if move_dir != Vector2.ZERO:
+		move_dir = move_dir.normalized()
 
 	# Muskantrörelse
 	var mouse_pos = get_viewport().get_mouse_position()
 
 	if mouse_pos.x < edge_margin:
-		direction.x -= 1
+		edge_dir.x -= 1
 	elif mouse_pos.x > screen_size.x - edge_margin:
-		direction.x += 1
+		edge_dir.x += 1
 
 	if mouse_pos.y < edge_margin:
-		direction.y -= 1
+		edge_dir.y -= 1
 	elif mouse_pos.y > screen_size.y - edge_margin:
-		direction.y += 1
+		edge_dir.y += 1
 
-	# Flytta kameran
-	position += direction * move_speed * delta
+	if edge_dir != Vector2.ZERO:
+		edge_dir = edge_dir.normalized()
+
+	# Lägg ihop båda rörelserna, med olika hastighet
+	position += (move_dir * move_speed + edge_dir * edge_scroll_speed) * delta
 	global_position = Utils.wrap_position(global_position)
+
 
 
 func _input(event):

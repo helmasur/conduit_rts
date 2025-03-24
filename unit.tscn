@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://bxnd7hcypruou"]
+[gd_scene load_steps=4 format=3 uid="uid://bxnd7hcypruou"]
 
 [ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit.gd" id="1_ctwoc"]
-[ext_resource type="Texture2D" uid="uid://dqcru6qg2a3f0" path="res://icon.svg" id="3_davkp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ctwoc"]
 size = Vector2(32, 32)
@@ -11,11 +10,8 @@ radius = 300.0
 
 [node name="Unit" type="CharacterBody2D"]
 motion_mode = 1
+wall_min_slide_angle = 0.0
 script = ExtResource("1_ctwoc")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("3_davkp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

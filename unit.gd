@@ -13,7 +13,7 @@ var energy: float = 0.0
 var health: float
 var health_current: float = 1
 var power: float
-var speed: float
+#var speed: float
 
 @export var health_prop: float = 0.5
 @export var power_prop: float = 0.2
@@ -113,14 +113,29 @@ func _physics_process(delta: float) -> void:
 
 	UnitAttributes.update_proportions(self, delta)
 
-	fsf = Utils.calc_free_space_factor(global_position)
+	fsf = Utils.calc_free_space_factor(global_position, get_parent().world_size)
 	queue_redraw()
 
 func _draw() -> void:
+	var size = 30.0
+	var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
+	var color = get_parent().player_color
+
+	# Rita original
+	draw_rect(rect, color, false, 2.0, true)
+
+	# Rita 8 kopior
+	var world_size = get_parent().world_size
+	for offset in Utils.get_toroid_offsets(world_size):
+		draw_set_transform(offset)
+		draw_rect(rect, color, false, 2.0, true)
+
+	# Återställ transform (för säkerhets skull)
+	draw_set_transform(Vector2.ZERO)
+
 	if is_selected:
-		var size = 30.0
-		var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
-		draw_rect(rect, Color(0,1,0), false, 2.0)
+		rect = Rect2(Vector2(-size/2-3, -size/2-3), Vector2(size+6, size+6))
+		draw_rect(rect, Color.BEIGE, false, -1)
 		draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
 
 func handle_state_machine(delta: float) -> void:
@@ -129,7 +144,7 @@ func handle_state_machine(delta: float) -> void:
 			match conduit_mode:
 				UnitShared.ConduitMode.COLLECTING:
 					#UnitCollect.handle_collect_state(self, delta)
-					var space_factor = Utils.calc_free_space_factor(global_position)
+					var space_factor = Utils.calc_free_space_factor(global_position, get_parent().world_size)
 					var collected_amount = space_factor * base_collect_rate * delta
 					GlobalGameState.player_energy += collected_amount
 				UnitShared.ConduitMode.BUILDING:

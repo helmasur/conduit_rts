@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://cnd6yet61fs7x" path="res://test.gd" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://cnd6yet61fs7x" path="res://player.gd" id="2_7mycd"]
 [ext_resource type="Script" uid="uid://bcp3gus4vjqtc" path="res://gui.gd" id="4_lquwl"]
 [ext_resource type="Script" uid="uid://sk07ba72nrfg" path="res://gui/player_energy.gd" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://chxk5r6puaa35" path="res://TriangleControl.gd" id="5_lquwl"]
@@ -34,8 +34,10 @@ script = ExtResource("1_h2yge")
 position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
 
-[node name="Test" type="Node2D" parent="."]
-script = ExtResource("4_1bvp3")
+[node name="Player" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_7mycd")
+player_energy = 100
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_0xm2m")
@@ -49,10 +51,11 @@ layout_mode = 3
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -150.0
-offset_bottom = 150.0
+offset_left = -193.0
+offset_top = 23.0
+offset_right = -43.0
+offset_bottom = 173.0
 grow_horizontal = 0
-rotation = 0.785398
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("5_lquwl")

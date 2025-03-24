@@ -1,5 +1,9 @@
 extends Node2D
 
+@export var player_color: Color = Color.DEEP_PINK
+@export var player_energy = 10000
+@export var world_size = Vector2(2048, 2048)
+
 func _ready() -> void:
 	get_parent().print_tree()
 	var unit_scene = preload("res://unit.tscn")

@@ -26,7 +26,7 @@ func _process(_delta: float) -> void:
 		%Energy_prog.value = selected_unit.energy / selected_unit.target_energy
 		%Health.value = selected_unit.health_current / selected_unit.health
 		%Power.text = "%.3f" % selected_unit.power
-		%Speed.text = "%.3f" % selected_unit.speed
+		%Speed.text = "%.3f" % UnitAttributes.get_speed_value(selected_unit)
 		%TriCon.set_point(selected_unit.health_prop, selected_unit.power_prop, selected_unit.speed_prop)
 
 		

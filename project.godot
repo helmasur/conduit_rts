@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="RTS_balance"
-run/main_scene="uid://4ij7u4ntmvdc"
+run/main_scene="uid://dcjg31qkj8607"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+MultiplayerManager="*res://MultiplayerManager.gd"
 
 [editor]
 

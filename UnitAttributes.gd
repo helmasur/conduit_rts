@@ -33,7 +33,7 @@ static func get_health_max(unit) -> float:
 	return max(1.0, unit.health_prop * unit.energy)
 
 static func get_speed_value(unit) -> float:
-	return unit.speed_prop * unit.energy * unit.speed_factor
+	return nlf(unit.speed_prop, 3) * unit.energy * unit.speed_factor
 
 static func get_power_value(unit) -> float:
 	return unit.power_prop * unit.energy
@@ -45,3 +45,8 @@ static func apply_damage(unit, amount: float) -> void:
 
 static func build_finished(unit) -> void:
 	unit.health_current = get_health_max(unit)
+	
+static func nlf(value: float, mod: float) -> float:
+	#Non linear function - mod=3 is approx x^2
+	return (pow(2, mod*value - mod) - pow(2, -mod)) / (1 - pow(2, -mod))
+	

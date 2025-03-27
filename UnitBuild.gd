@@ -5,6 +5,7 @@ static func start_build(unit: Unit, e: float, h: float, p: float, s: float) -> v
 	var new_unit = unit.unit_scene.instantiate() as CharacterBody2D
 	unit.get_tree().current_scene.add_child(new_unit)
 	unit.unit_to_build = new_unit
+	new_unit.player = unit.player
 	new_unit.global_position = unit.global_position + Vector2(50, 0)
 	new_unit.target_energy = e
 	new_unit.health_prop = h
@@ -46,12 +47,11 @@ static func handle_build_state(unit: Unit, delta: float) -> void:
 					unit.unit_to_build.energy += transfer_amount
 					unit.get_parent().player_energy -= transfer_amount
 				if unit.unit_to_build.energy >= unit.unit_to_build.target_energy:
-					# Unit är redo
 					#UnitAttributes.normalize_proportions(unit.unit_to_build)
 					#unit.unit_to_build.mode = UnitShared.ActionMode.FREE
 					#unit.unit_to_build.build_finished()
 					unit.unit_to_build = null
-					unit.mode = UnitShared.ConduitMode.COLLECTING
+					unit.conduit_mode = UnitShared.ConduitMode.COLLECTING
 
 		#UnitShared.ConduitMode.BUILD_STOPPING:
 			#unit.mode_timer -= delta

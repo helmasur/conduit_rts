@@ -2,6 +2,9 @@
 extends CharacterBody2D
 class_name Unit
 
+var unit_scene = preload("res://unit.tscn")
+var player : Player
+
 # Ladda in våra nya script
 #const UnitShared = preload("res://UnitShared.gd")
 #const UnitAttributes = preload("res://UnitAttributes.gd")
@@ -15,12 +18,10 @@ var health_current: float = 1
 var power: float
 #var speed: float
 
-@export var world_size: Vector2
-
 @export var health_prop: float = 0.5
 @export var power_prop: float = 0.2
 @export var speed_prop: float = 0.3
-@export var speed_factor: float = 1
+@export var speed_factor: float = 2
 
 var target_health_prop: float
 var target_power_prop: float
@@ -33,8 +34,6 @@ var conduit_mode: int = UnitShared.ConduitMode.COLLECTING
 
 @export var base_collect_rate: float = 5.0
 @export var build_transfer_rate: float = 5.0
-
-@export var unit_scene: PackedScene = preload("res://unit.tscn")
 
 var nearby_units: Array = []
 var build_queue: Array = []
@@ -90,7 +89,7 @@ func _physics_process(delta: float) -> void:
 		var dist = destination.distance_to(global_position)
 		var speed = UnitAttributes.get_speed_value(self)
 		if dist > 2.0:
-			var dir = Utils.toroid_direction(global_position, destination, world_size).normalized()
+			var dir = Utils.toroid_direction(global_position, destination, player.world_size).normalized()
 			velocity = dir * speed
 			
 			# UNDERSÖK om vi kommer passera destinationen under detta frame
@@ -117,22 +116,24 @@ func _physics_process(delta: float) -> void:
 
 	if self. is_in_group("selected") or mode == UnitShared.ActionMode.CONDUIT:
 		var units = get_tree().get_nodes_in_group("units")
-		fsf = Utils.calc_free_space_factor(global_position, world_size, units)
+		fsf = Utils.calc_free_space_factor(global_position, player.world_size, units)
 		
 	queue_redraw()
 
 func _draw() -> void:
 	var size = 30.0
-	var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
-	var color = get_parent().player_color
+	var color = player.player_color
 
 	# Rita 9 kopior
-	for offset in Utils.get_toroid_offsets(world_size):
+	for offset in Utils.get_toroid_offsets(player.world_size):
+		var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
 		draw_set_transform(offset)
 		draw_rect(rect, color, false, 2.0, true)
 		if is_selected:
 			rect = Rect2(Vector2(-size/2-3, -size/2-3), Vector2(size+6, size+6))
 			draw_rect(rect, Color.BEIGE, false, -1)
+			draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
+		elif conduit_mode == UnitShared.ConduitMode.COLLECTING:
 			draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
 
 	# Återställ transform (för säkerhets skull)
@@ -144,10 +145,8 @@ func handle_state_machine(delta: float) -> void:
 			match conduit_mode:
 				UnitShared.ConduitMode.COLLECTING:
 					#UnitCollect.handle_collect_state(self, delta)
-					var units = get_tree().get_nodes_in_group("units")
-					var space_factor = Utils.calc_free_space_factor(global_position, world_size, units)
-					var collected_amount = space_factor * base_collect_rate * delta
-					get_parent().player_energy += collected_amount
+					var collected_amount = fsf * base_collect_rate * delta
+					player.add_player_energy(collected_amount)
 				UnitShared.ConduitMode.BUILDING:
 					UnitBuild.handle_build_state(self, delta)
 			

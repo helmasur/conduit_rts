@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://dcjg31qkj8607"]
+
+[ext_resource type="Script" uid="uid://bdjc30y07ef6s" path="res://main_menu.gd" id="1_06t4h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7vrkn"]
+bg_color = Color(0.226106, 0.209214, 0.145407, 1)
+
+[node name="Main menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource("1_06t4h")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7vrkn")
+
+[node name="Host Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 553.0
+offset_top = 173.0
+offset_right = 628.0
+offset_bottom = 223.0
+theme_override_font_sizes/font_size = 30
+text = "Host"
+
+[node name="Join Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 607.0
+offset_top = 367.0
+offset_right = 670.0
+offset_bottom = 417.0
+theme_override_font_sizes/font_size = 30
+disabled = true
+text = "Join"
+
+[node name="IP" type="LineEdit" parent="."]
+custom_minimum_size = Vector2(150, 30)
+layout_mode = 0
+offset_left = 439.0
+offset_top = 379.0
+offset_right = 589.0
+offset_bottom = 410.0
+placeholder_text = "Ex. 192.168.0.100"
+
+[connection signal="pressed" from="Host Button" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="Join Button" to="." method="_on_join_button_pressed"]
+[connection signal="text_submitted" from="IP" to="." method="_on_ip_text_submitted"]

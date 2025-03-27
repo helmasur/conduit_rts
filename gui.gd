@@ -1,4 +1,6 @@
-extends VBoxContainer
+extends Control
+
+@export var player: Player
 
 var selected_unit: Unit
 var selected_units
@@ -39,6 +41,8 @@ func _process(_delta: float) -> void:
 
 func _on_transform_button_pressed() -> void:
 	print("Tricon: ", %TriCon.current_h, " ", %TriCon.current_p, " ", %TriCon.current_s)
+	print("Mode: ", selected_unit.mode)
+	print("Conduit Mode: ", selected_unit.conduit_mode)
 	for unit in selected_units:
 		unit.target_health_prop = %TriCon.current_h
 		#print(unit.health_prop, " ", unit.target_health_prop)

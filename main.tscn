@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://4ij7u4ntmvdc"]
+[gd_scene load_steps=12 format=3 uid="uid://4ij7u4ntmvdc"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://cnd6yet61fs7x" path="res://player.gd" id="2_7mycd"]
 [ext_resource type="Script" uid="uid://bcp3gus4vjqtc" path="res://gui.gd" id="4_lquwl"]
 [ext_resource type="Script" uid="uid://sk07ba72nrfg" path="res://gui/player_energy.gd" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://chxk5r6puaa35" path="res://TriangleControl.gd" id="5_lquwl"]
@@ -34,27 +33,33 @@ script = ExtResource("1_h2yge")
 position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
 
-[node name="Player" type="Node2D" parent="."]
-unique_name_in_owner = true
-script = ExtResource("2_7mycd")
-player_energy = 100
-
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_0xm2m")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="TriCon" type="Control" parent="CanvasLayer"]
+[node name="GUI" type="Control" parent="CanvasLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_lquwl")
+
+[node name="TriCon" type="Control" parent="CanvasLayer/GUI"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 150)
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -193.0
-offset_top = 23.0
-offset_right = -43.0
-offset_bottom = 173.0
+offset_left = -196.0
+offset_top = 39.0
+offset_right = -46.0
+offset_bottom = 189.0
 grow_horizontal = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -63,7 +68,7 @@ color_a = Color(0.514186, 0.488542, 0.803083, 1)
 color_b = Color(0.492755, 0.902826, 0.943716, 1)
 color_c = Color(0.36969, 0.336095, 0.212066, 1)
 
-[node name="Player energy" type="Label" parent="CanvasLayer"]
+[node name="Player energy" type="Label" parent="CanvasLayer/GUI"]
 offset_left = 791.0
 offset_top = 24.0
 offset_right = 983.0
@@ -71,28 +76,28 @@ offset_bottom = 47.0
 text = "Player energy"
 script = ExtResource("5_7mycd")
 
-[node name="GUI" type="VBoxContainer" parent="CanvasLayer"]
+[node name="Stack" type="VBoxContainer" parent="CanvasLayer/GUI"]
 custom_minimum_size = Vector2(150, 0)
+layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -215.0
-offset_top = 203.0
-offset_right = -23.0
-offset_bottom = 603.0
+offset_left = -210.0
+offset_top = 229.0
+offset_right = -18.0
+offset_bottom = 629.0
 grow_horizontal = 0
-script = ExtResource("4_lquwl")
 
-[node name="Attributes" type="PanelContainer" parent="CanvasLayer/GUI"]
+[node name="Attributes" type="PanelContainer" parent="CanvasLayer/GUI/Stack"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Attributes"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Stack/Attributes"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GUI/Attributes/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer"]
 layout_mode = 2
 
-[node name="Energy_prog" type="ProgressBar" parent="CanvasLayer/GUI/Attributes/VBoxContainer/MarginContainer"]
+[node name="Energy_prog" type="ProgressBar" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 1
@@ -102,107 +107,107 @@ max_value = 1.0
 value = 0.5
 show_percentage = false
 
-[node name="Energy" type="Label" parent="CanvasLayer/GUI/Attributes/VBoxContainer/MarginContainer"]
+[node name="Energy" type="Label" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Unit Energy:"
 
-[node name="Health" type="ProgressBar" parent="CanvasLayer/GUI/Attributes/VBoxContainer"]
+[node name="Health" type="ProgressBar" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_1bvp3")
 max_value = 1.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/Attributes/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer"]
 layout_mode = 2
 
-[node name="Power" type="Label" parent="CanvasLayer/GUI/Attributes/VBoxContainer/HBoxContainer"]
+[node name="Power" type="Label" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Power"
 horizontal_alignment = 1
 
-[node name="Speed" type="Label" parent="CanvasLayer/GUI/Attributes/VBoxContainer/HBoxContainer"]
+[node name="Speed" type="Label" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Speed"
 horizontal_alignment = 1
 
-[node name="Buttons" type="PanelContainer" parent="CanvasLayer/GUI"]
+[node name="Buttons" type="PanelContainer" parent="CanvasLayer/GUI/Stack"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Buttons"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Stack/Buttons"]
 layout_mode = 2
 
-[node name="Transform_button" type="Button" parent="CanvasLayer/GUI/Buttons/VBoxContainer"]
+[node name="Transform_button" type="Button" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Transform"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/Buttons/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer"]
 layout_mode = 2
 
-[node name="Conduit" type="Button" parent="CanvasLayer/GUI/Buttons/VBoxContainer/HBoxContainer"]
+[node name="Conduit" type="Button" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Conduit"
 
-[node name="Pop" type="Button" parent="CanvasLayer/GUI/Buttons/VBoxContainer/HBoxContainer"]
+[node name="Pop" type="Button" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Pop"
 
-[node name="Pop_energy" type="LineEdit" parent="CanvasLayer/GUI/Buttons/VBoxContainer/HBoxContainer"]
+[node name="Pop_energy" type="LineEdit" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Energy"
 emoji_menu_enabled = false
 virtual_keyboard_type = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Stack"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Button" type="Button" parent="CanvasLayer/GUI/VBoxContainer"]
+[node name="Button" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Left click to load"
 
-[node name="Button2" type="Button" parent="CanvasLayer/GUI/VBoxContainer"]
+[node name="Button2" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Right click to save"
 
-[node name="Button3" type="Button" parent="CanvasLayer/GUI/VBoxContainer"]
+[node name="Button3" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "c"
 
-[node name="Button4" type="Button" parent="CanvasLayer/GUI/VBoxContainer"]
+[node name="Button4" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "d"
 
-[node name="Button5" type="Button" parent="CanvasLayer/GUI/VBoxContainer"]
+[node name="Button5" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "e"
 
-[node name="Button6" type="Button" parent="CanvasLayer/GUI/VBoxContainer"]
+[node name="Button6" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "f"
 
-[node name="Button7" type="Button" parent="CanvasLayer/GUI/VBoxContainer"]
+[node name="Button7" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "f"
 
-[connection signal="pressed" from="CanvasLayer/GUI/Buttons/VBoxContainer/Transform_button" to="CanvasLayer/GUI" method="_on_transform_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/GUI/Buttons/VBoxContainer/HBoxContainer/Conduit" to="CanvasLayer/GUI" method="_on_conduit_pressed"]
-[connection signal="pressed" from="CanvasLayer/GUI/Buttons/VBoxContainer/HBoxContainer/Pop" to="CanvasLayer/GUI" method="_on_pop_pressed"]
+[connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/Transform_button" to="CanvasLayer/GUI" method="_on_transform_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer/Conduit" to="CanvasLayer/GUI" method="_on_conduit_pressed"]
+[connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer/Pop" to="CanvasLayer/GUI" method="_on_pop_pressed"]

@@ -1,4 +1,5 @@
 extends Label
 
 func _process(_delta: float) -> void:
-	text = "Energy pool: " + str(%Player.player_energy)
+	if %GUI.player:
+		text = "Energy pool: " + str(%GUI.player.player_energy)

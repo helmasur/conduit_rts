@@ -2,6 +2,27 @@ extends Node2D
 
 var selected_unit: Node = null
 var tricon_h: float = .33
+@export var player_scene: PackedScene = preload("res://player.tscn")
+
+func _ready():
+	_on_game_started()
+
+func _on_game_started():
+	if MultiplayerManager.is_host():
+		for id in multiplayer.get_peers():
+			_add_player(id)
+
+		# Lägg även till dig själv
+		_add_player(multiplayer.get_unique_id())
+
+func _add_player(peer_id: int):
+	var player = player_scene.instantiate()
+	player.name = "Player_%s" % peer_id
+	add_child(player)
+	player.set_multiplayer_authority(peer_id)
+	if peer_id == multiplayer.get_unique_id():
+		$CanvasLayer/GUI.player = player
+		player.spawn_initial_unit()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:

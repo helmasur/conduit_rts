@@ -15,11 +15,6 @@ run/main_scene="uid://4ij7u4ntmvdc"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[autoload]
-
-Utils="*res://utils.gd"
-GlobalGameState="*res://global_game_state.gd"
-
 [editor]
 
 version_control/plugin_name="GitPlugin"

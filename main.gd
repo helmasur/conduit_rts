@@ -8,6 +8,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var camera = $Camera2D
 		var click_pos = camera.get_global_mouse_position()
 		if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+			click_pos = Utils.wrap_position(click_pos)
 			_handle_left_click(click_pos)
 
 		elif event.button_index == MouseButton.MOUSE_BUTTON_RIGHT:

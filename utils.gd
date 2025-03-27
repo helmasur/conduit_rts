@@ -1,6 +1,6 @@
-extends Node  # Autoload behöver en nod att existera på, även om vi bara använder funktioner
+class_name Utils
 
-func wrap_position(pos: Vector2) -> Vector2:
+static func wrap_position(pos: Vector2) -> Vector2:
 	var world_size = Vector2(2048, 2048)
 	
 	if pos.x < 0:
@@ -16,7 +16,7 @@ func wrap_position(pos: Vector2) -> Vector2:
 	return pos
 	
 # Hjälpfunktion för att räkna ut toroidalt avstånd mellan två punkter i en 2048x2048 värld.
-func toroid_distance(p1: Vector2, p2: Vector2, world_size: Vector2) -> float:
+static func toroid_distance(p1: Vector2, p2: Vector2, world_size: Vector2) -> float:
 	var dx = abs(p1.x - p2.x)
 	if dx > world_size.x / 2:
 		dx = world_size.x - dx
@@ -25,12 +25,33 @@ func toroid_distance(p1: Vector2, p2: Vector2, world_size: Vector2) -> float:
 		dy = world_size.y - dy
 	return sqrt(dx * dx + dy * dy)
 
+static func toroid_direction(from: Vector2, to: Vector2, world_size: Vector2) -> Vector2:
+	var dx = to.x - from.x
+	var dy = to.y - from.y
+
+	# Wrap i X-led
+	if abs(dx) > world_size.x / 2:
+		if dx > 0:
+			dx -= world_size.x
+		else:
+			dx += world_size.x
+
+	# Wrap i Y-led
+	if abs(dy) > world_size.y / 2:
+		if dy > 0:
+			dy -= world_size.y
+		else:
+			dy += world_size.y
+
+	return Vector2(dx, dy)
+
+
 # Funktion för att räkna ut ett "free space factor" baserat på avståndet till andra enheter,
 # anpassat för en toroid värld (2048x2048).
-func calc_free_space_factor(pos: Vector2, world_size: Vector2) -> float:
+static func calc_free_space_factor(pos: Vector2, world_size: Vector2, units: Array) -> float:
 	var dist_max = sqrt(2.0) * world_size.x / 2.0
 	var fsf = 1.0
-	var units = get_tree().get_nodes_in_group("units")
+	#var units = get_tree().get_nodes_in_group("units")
 	
 	for unit in units:
 		if pos != unit.global_position:  # Hoppa över oss själva
@@ -50,4 +71,5 @@ static func get_toroid_offsets(world_size: Vector2) -> Array[Vector2]:
 		Vector2(-world_size.x, world_size.y),
 		Vector2(0, world_size.y),
 		Vector2(world_size.x, world_size.y),
+		Vector2(0, 0)
 	]

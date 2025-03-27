@@ -15,6 +15,8 @@ var health_current: float = 1
 var power: float
 #var speed: float
 
+@export var world_size: Vector2
+
 @export var health_prop: float = 0.5
 @export var power_prop: float = 0.2
 @export var speed_prop: float = 0.3
@@ -88,7 +90,7 @@ func _physics_process(delta: float) -> void:
 		var dist = destination.distance_to(global_position)
 		var speed = UnitAttributes.get_speed_value(self)
 		if dist > 2.0:
-			var dir = (destination - global_position).normalized()
+			var dir = Utils.toroid_direction(global_position, destination, world_size).normalized()
 			velocity = dir * speed
 			
 			# UNDERSÖK om vi kommer passera destinationen under detta frame
@@ -113,7 +115,10 @@ func _physics_process(delta: float) -> void:
 
 	UnitAttributes.update_proportions(self, delta)
 
-	fsf = Utils.calc_free_space_factor(global_position, get_parent().world_size)
+	if self. is_in_group("selected") or mode == UnitShared.ActionMode.CONDUIT:
+		var units = get_tree().get_nodes_in_group("units")
+		fsf = Utils.calc_free_space_factor(global_position, world_size, units)
+		
 	queue_redraw()
 
 func _draw() -> void:
@@ -121,22 +126,17 @@ func _draw() -> void:
 	var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
 	var color = get_parent().player_color
 
-	# Rita original
-	draw_rect(rect, color, false, 2.0, true)
-
-	# Rita 8 kopior
-	var world_size = get_parent().world_size
+	# Rita 9 kopior
 	for offset in Utils.get_toroid_offsets(world_size):
 		draw_set_transform(offset)
 		draw_rect(rect, color, false, 2.0, true)
+		if is_selected:
+			rect = Rect2(Vector2(-size/2-3, -size/2-3), Vector2(size+6, size+6))
+			draw_rect(rect, Color.BEIGE, false, -1)
+			draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
 
 	# Återställ transform (för säkerhets skull)
 	draw_set_transform(Vector2.ZERO)
-
-	if is_selected:
-		rect = Rect2(Vector2(-size/2-3, -size/2-3), Vector2(size+6, size+6))
-		draw_rect(rect, Color.BEIGE, false, -1)
-		draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
 
 func handle_state_machine(delta: float) -> void:
 	match mode:
@@ -144,9 +144,10 @@ func handle_state_machine(delta: float) -> void:
 			match conduit_mode:
 				UnitShared.ConduitMode.COLLECTING:
 					#UnitCollect.handle_collect_state(self, delta)
-					var space_factor = Utils.calc_free_space_factor(global_position, get_parent().world_size)
+					var units = get_tree().get_nodes_in_group("units")
+					var space_factor = Utils.calc_free_space_factor(global_position, world_size, units)
 					var collected_amount = space_factor * base_collect_rate * delta
-					GlobalGameState.player_energy += collected_amount
+					get_parent().player_energy += collected_amount
 				UnitShared.ConduitMode.BUILDING:
 					UnitBuild.handle_build_state(self, delta)
 			

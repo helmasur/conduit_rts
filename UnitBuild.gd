@@ -37,14 +37,14 @@ static func handle_build_state(unit: Unit, delta: float) -> void:
 		UnitShared.ConduitMode.BUILDING:
 			if unit.unit_to_build:
 				var transfer_amount = unit.build_transfer_rate * delta
-				if GlobalGameState.player_energy < transfer_amount:
-					transfer_amount = GlobalGameState.player_energy
+				if unit.get_parent().player_energy < transfer_amount:
+					transfer_amount = unit.get_parent().player_energy
 				var needed = unit.unit_to_build.target_energy - unit.unit_to_build.energy
 				if needed < transfer_amount:
 					transfer_amount = needed
 				if transfer_amount > 0:
 					unit.unit_to_build.energy += transfer_amount
-					GlobalGameState.player_energy -= transfer_amount
+					unit.get_parent().player_energy -= transfer_amount
 				if unit.unit_to_build.energy >= unit.unit_to_build.target_energy:
 					# Unit är redo
 					#UnitAttributes.normalize_proportions(unit.unit_to_build)

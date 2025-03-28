@@ -5,20 +5,11 @@ class_name Unit
 var unit_scene = preload("res://unit.tscn")
 var player : Player
 
-# Ladda in våra nya script
-#const UnitShared = preload("res://UnitShared.gd")
-#const UnitAttributes = preload("res://UnitAttributes.gd")
-#const UnitCollect = preload("res://UnitCollect.gd")
-#const UnitBuild = preload("res://UnitBuild.gd")
-
 var target_energy: float = 0.0
 var energy: float = 0.0
 var health_max: float
 var health_current: float = 1
-var target_health_current: float
-var old_health_current: float
 var power: float
-#var speed: float
 
 @export var speed_factor: float = 2
 @export var base_collect_rate: float = 5.0
@@ -55,7 +46,6 @@ func _ready() -> void:
 	target_power_prop = power_prop
 	health_max = UnitAttributes.get_health_max(self)
 	health_current = health_max / 2 ##for testing
-	#UnitAttributes.normalize_proportions(self)
 	add_to_group("units")
 	destination = global_position
 	$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
@@ -63,35 +53,15 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	handle_state_machine(delta)
 	if speed_prop < 0.01: destination = global_position
-	
 	if energy < target_energy:
 		# Enheten ej färdigbyggd
 		mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
-		#add_to_group("unfinished")
-		
 	elif health_prop > 0.99:
 		# Conduit mode
 		mode = UnitShared.ActionMode.CONDUIT
-		
 	else:
 		mode = UnitShared.ActionMode.FREE
 		
-		#var transaction = build_transfer_rate * delta / fsf
-		#var diff = nearest_unfinished.target_energy - nearest_unfinished.energy
-		#if diff > transaction:
-			#GlobalGameState.player_energy -= transaction
-			#nearest_unfinished.energy += transaction
-		#else:
-			#GlobalGameState.player_energy -= diff
-			#nearest_unfinished.energy += diff
-		
-				
-		#var collected_amount = fsf * base_collect_rate * delta
-		#GlobalGameState.player_energy += collected_amount
-	#else:
-		#mode = UnitShared.ActionMode.FREE
-		#remove_from_group("unfinished")
-	
 	if mode == UnitShared.ActionMode.FREE:
 		var dist = destination.distance_to(global_position)
 		var speed = UnitAttributes.get_speed_value(self)
@@ -163,8 +133,6 @@ func handle_state_machine(delta: float) -> void:
 		_:
 			# ActionMode.FREE eller annat
 			pass
-
-	
 
 func set_selected(selected: bool) -> void:
 	is_selected = selected

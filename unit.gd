@@ -13,41 +13,48 @@ var player : Player
 
 var target_energy: float = 0.0
 var energy: float = 0.0
-var health: float
+var health_max: float
 var health_current: float = 1
+var target_health_current: float
+var old_health_current: float
 var power: float
 #var speed: float
+
+@export var speed_factor: float = 2
+@export var base_collect_rate: float = 5.0
+@export var build_transfer_rate: float = 5.0
+
+var transform_amount: float = 0.0
+var transform_current: float
+var fsf: float
 
 @export var health_prop: float = 0.5
 @export var power_prop: float = 0.2
 @export var speed_prop: float = 0.3
-@export var speed_factor: float = 2
-
 var target_health_prop: float
 var target_power_prop: float
 var target_speed_prop: float
+var old_health_prop: float
+var old_power_prop: float
+var old_speed_prop: float
 
-var fsf: float
-
-var mode: int = UnitShared.ActionMode.FREE
-var conduit_mode: int = UnitShared.ConduitMode.COLLECTING
-
-@export var base_collect_rate: float = 5.0
-@export var build_transfer_rate: float = 5.0
-
+var destination: Vector2
 var nearby_units: Array = []
 var build_queue: Array = []
 var unit_to_build: Unit = null
 var unit_to_attack: Unit = null
 var unit_to_repair: Unit = null
 
+var mode: int = UnitShared.ActionMode.FREE
+var conduit_mode: int = UnitShared.ConduitMode.COLLECTING
 var is_selected: bool = false
-var destination: Vector2
 
 func _ready() -> void:
 	target_health_prop = health_prop
 	target_speed_prop = speed_prop
 	target_power_prop = power_prop
+	health_max = UnitAttributes.get_health_max(self)
+	health_current = health_max / 2 ##for testing
 	#UnitAttributes.normalize_proportions(self)
 	add_to_group("units")
 	destination = global_position

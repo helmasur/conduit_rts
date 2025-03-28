@@ -1,9 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://4ij7u4ntmvdc"]
+[gd_scene load_steps=11 format=3 uid="uid://4ij7u4ntmvdc"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://bcp3gus4vjqtc" path="res://gui.gd" id="4_lquwl"]
-[ext_resource type="Script" uid="uid://sk07ba72nrfg" path="res://gui/player_energy.gd" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://chxk5r6puaa35" path="res://TriangleControl.gd" id="5_lquwl"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
@@ -68,13 +67,14 @@ color_a = Color(0.514186, 0.488542, 0.803083, 1)
 color_b = Color(0.492755, 0.902826, 0.943716, 1)
 color_c = Color(0.36969, 0.336095, 0.212066, 1)
 
-[node name="Player energy" type="Label" parent="CanvasLayer/GUI"]
+[node name="Player_energy" type="Label" parent="CanvasLayer/GUI"]
+unique_name_in_owner = true
+layout_mode = 0
 offset_left = 791.0
 offset_top = 24.0
 offset_right = 983.0
 offset_bottom = 47.0
 text = "Player energy"
-script = ExtResource("5_7mycd")
 
 [node name="Stack" type="VBoxContainer" parent="CanvasLayer/GUI"]
 custom_minimum_size = Vector2(150, 0)

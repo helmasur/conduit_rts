@@ -3,7 +3,7 @@ extends Control
 @export var player: Player
 
 var selected_unit: Unit
-var selected_units
+var selected_units: Array[Node]
 var selected_units_count
 var unit_scene: PackedScene = preload("res://unit.tscn")
 
@@ -11,6 +11,9 @@ func _process(_delta: float) -> void:
 	selected_unit = null
 	selected_units = get_tree().get_nodes_in_group("selected_units")
 	selected_units_count = len(selected_units)
+	
+	if player:
+		%Player_energy.text = "Energy pool: " + str(%GUI.player.player_energy)
 	
 	if selected_units_count == 1:
 		selected_unit = selected_units[0]
@@ -26,7 +29,7 @@ func _process(_delta: float) -> void:
 		else: %Pop.disabled = true
 		%Energy.text = "%.3f" % selected_unit.energy
 		%Energy_prog.value = selected_unit.energy / selected_unit.target_energy
-		%Health.value = selected_unit.health_current / selected_unit.health
+		%Health.value = selected_unit.health_current / selected_unit.health_max
 		%Power.text = "%.3f" % selected_unit.power
 		%Speed.text = "%.3f" % UnitAttributes.get_speed_value(selected_unit)
 		%TriCon.set_point(selected_unit.health_prop, selected_unit.power_prop, selected_unit.speed_prop)
@@ -43,11 +46,23 @@ func _on_transform_button_pressed() -> void:
 	print("Tricon: ", %TriCon.current_h, " ", %TriCon.current_p, " ", %TriCon.current_s)
 	print("Mode: ", selected_unit.mode)
 	print("Conduit Mode: ", selected_unit.conduit_mode)
-	for unit in selected_units:
+	for unit: Unit in selected_units:
+		unit.old_health_prop = unit.health_prop
+		unit.old_power_prop = unit.power_prop
+		unit.old_speed_prop = unit.speed_prop
 		unit.target_health_prop = %TriCon.current_h
-		#print(unit.health_prop, " ", unit.target_health_prop)
+		if unit.target_health_prop < unit.health_prop:
+			unit.old_health_current = unit.health_current
+			var new_max = unit.target_health_prop * unit.energy
+			var ratio = unit.health_current / unit.health_max
+			unit.target_health_current = ratio * new_max
 		unit.target_power_prop = %TriCon.current_p
 		unit.target_speed_prop = %TriCon.current_s
+		unit.transform_amount = 0.0
+		unit.transform_current = 0.0
+		unit.transform_amount += abs(unit.target_health_prop - unit.health_prop)
+		unit.transform_amount += abs(unit.target_power_prop - unit.power_prop)
+		unit.transform_amount += abs(unit.target_speed_prop - unit.speed_prop)
 
 func _on_conduit_pressed() -> void:
 	for unit in selected_units:

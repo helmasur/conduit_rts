@@ -2,7 +2,7 @@
 class_name UnitBuild
 
 static func start_build(unit: Unit, e: float, h: float, p: float, s: float) -> void:
-	var new_unit = unit.unit_scene.instantiate() as CharacterBody2D
+	var new_unit = unit.unit_scene.instantiate() as Unit
 	unit.get_tree().current_scene.add_child(new_unit)
 	unit.unit_to_build = new_unit
 	new_unit.player = unit.player

@@ -51,6 +51,7 @@ func _ready() -> void:
 	$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority(): return
 	handle_state_machine(delta)
 	if speed_prop < 0.01: destination = global_position
 	if energy < target_energy:

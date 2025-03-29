@@ -208,6 +208,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "f"
 
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://b74nujfyhp6qr")
+spawn_path = NodePath("..")
+
 [connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/Transform_button" to="CanvasLayer/GUI" method="_on_transform_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer/Conduit" to="CanvasLayer/GUI" method="_on_conduit_pressed"]
 [connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer/Pop" to="CanvasLayer/GUI" method="_on_pop_pressed"]

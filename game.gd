@@ -1,3 +1,4 @@
+## game.gd
 extends Node2D
 
 var selected_unit: Node = null
@@ -5,13 +6,23 @@ var tricon_h: float = .33
 @export var player_scene: PackedScene = preload("res://player.tscn")
 
 func _ready():
+	pass
 	_on_game_started()
+	if multiplayer.is_server():
+		multiplayer.peer_connected.connect(_add_player)
+		##get_tree().connect("peer_connected", Callable(self, "_on_network_peer_connected"))
+		#var mp = get_tree().get_multiplayer()
+		#mp.peer_connected.connect(_on_network_peer_connected)
+	$Camera2D.make_current()
+
+func _on_network_peer_connected(peer_id: int) -> void:
+	print("Ny klient ansluten med peer_id:", peer_id)
+	_add_player(peer_id)
 
 func _on_game_started():
-	if MultiplayerManager.is_host():
+	if multiplayer.is_server():
 		for id in multiplayer.get_peers():
 			_add_player(id)
-
 		# Lägg även till dig själv
 		_add_player(multiplayer.get_unique_id())
 
@@ -20,11 +31,9 @@ func _add_player(peer_id: int):
 	player.name = "Player_%s" % peer_id
 	add_child(player)
 	player.set_multiplayer_authority(peer_id)
-	if peer_id == multiplayer.get_unique_id():
-		$CanvasLayer/GUI.player = player
-		player.spawn_initial_unit()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not is_multiplayer_authority(): return
 	if event is InputEventMouseButton and event.pressed:
 		var camera = $Camera2D
 		var click_pos = camera.get_global_mouse_position()

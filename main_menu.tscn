@@ -51,6 +51,7 @@ offset_left = 439.0
 offset_top = 379.0
 offset_right = 589.0
 offset_bottom = 410.0
+text = "127.0.0.1"
 placeholder_text = "Ex. 192.168.0.100"
 
 [connection signal="pressed" from="Host Button" to="." method="_on_host_button_pressed"]

@@ -7,30 +7,37 @@ var tricon_h: float = .33
 
 func _ready():
 	pass
-	_on_game_started()
-	if multiplayer.is_server():
-		multiplayer.peer_connected.connect(_add_player)
+	#_on_game_started()
 		##get_tree().connect("peer_connected", Callable(self, "_on_network_peer_connected"))
 		#var mp = get_tree().get_multiplayer()
 		#mp.peer_connected.connect(_on_network_peer_connected)
-	$Camera2D.make_current()
 
-func _on_network_peer_connected(peer_id: int) -> void:
-	print("Ny klient ansluten med peer_id:", peer_id)
-	_add_player(peer_id)
+#func _on_network_peer_connected(peer_id: int) -> void:
+	#print("Ny klient ansluten med peer_id:", peer_id)
+	#_add_player(peer_id)
 
-func _on_game_started():
+func _on_server_start():
 	if multiplayer.is_server():
-		for id in multiplayer.get_peers():
-			_add_player(id)
-		# Lägg även till dig själv
+		print("Is server")
+		multiplayer.peer_connected.connect(_add_player)
 		_add_player(multiplayer.get_unique_id())
+	
+
+#func _on_game_started():
+	#await get_tree().create_timer(.5).timeout
+	#if multiplayer.is_server():
+		#for id in multiplayer.get_peers():
+			#_add_player(id)
+		## Lägg även till dig själv
+		#_add_player(multiplayer.get_unique_id())
 
 func _add_player(peer_id: int):
+	print("Game: add player id, ", peer_id)
 	var player = player_scene.instantiate()
-	player.name = "Player_%s" % peer_id
+	player.name = str(peer_id)
+	player.id = peer_id
+	player.set_multiplayer_authority(peer_id) # Måste göras innan add_child()
 	add_child(player)
-	player.set_multiplayer_authority(peer_id)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return

@@ -16,7 +16,7 @@ func host() -> void:
 	multiplayer.multiplayer_peer = peer
 	print("Hosting on port", PORT)
 
-func join(ip: String, port: int = 12345) -> void:
+func join(ip: String) -> void:
 	peer.create_client(ip, PORT)
 	multiplayer.multiplayer_peer = peer
 	print("Joining", ip, ":", PORT)

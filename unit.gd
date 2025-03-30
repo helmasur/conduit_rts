@@ -99,23 +99,24 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	var size = 30.0
-	var color = player.player_color
+	if is_multiplayer_authority():
+		var size = 30.0
+		var color = player.player_color
 
-	# Rita 9 kopior
-	for offset in Utils.get_toroid_offsets(player.world_size):
-		var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
-		draw_set_transform(offset)
-		draw_rect(rect, color, false, 2.0, true)
-		if is_selected:
-			rect = Rect2(Vector2(-size/2-3, -size/2-3), Vector2(size+6, size+6))
-			draw_rect(rect, Color.BEIGE, false, -1)
-			draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
-		elif conduit_mode == UnitShared.ConduitMode.COLLECTING:
-			draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
+		# Rita 9 kopior
+		for offset in Utils.get_toroid_offsets(player.world_size):
+			var rect = Rect2(Vector2(-size/2, -size/2), Vector2(size, size))
+			draw_set_transform(offset)
+			draw_rect(rect, color, false, 2.0, true)
+			if is_selected:
+				rect = Rect2(Vector2(-size/2-3, -size/2-3), Vector2(size+6, size+6))
+				draw_rect(rect, Color.BEIGE, false, -1)
+				draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
+			elif conduit_mode == UnitShared.ConduitMode.COLLECTING:
+				draw_circle(Vector2.ZERO, fsf*300, Color.FLORAL_WHITE, false, -1.0, false) #ingen AA för width <0
 
-	# Återställ transform (för säkerhets skull)
-	draw_set_transform(Vector2.ZERO)
+		# Återställ transform (för säkerhets skull)
+		draw_set_transform(Vector2.ZERO)
 
 func handle_state_machine(delta: float) -> void:
 	match mode:

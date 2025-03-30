@@ -8,30 +8,39 @@ var player_energy: float = 100.0
 var unit_scene = preload("res://unit.tscn")
 @onready var unit_spawner = $UnitSpawner
 
+var id: int
+
+func _enter_tree() -> void:
+	pass
+	#if not is_multiplayer_authority(): return
+	#print("Player: et, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())
+	#print("Player: et, id = ", id)
+	#set_multiplayer_authority(id, true)
 
 func _ready() -> void:
-	if not is_multiplayer_authority(): return
-	
-	
+	print("Player: ready, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())
+	if is_multiplayer_authority():
+		print("Authority was here")
+		var cam : Camera2D = $"../Camera2D"
+		cam.make_current()
+		spawn_initial_unit()
+	else:
+		print("Authority was not here")
 	
 	add_to_group("players")
-	print("Player ready: ", multiplayer.get_unique_id())
 	#var sp = "/root/Player_" + str(multiplayer.get_unique_id())
 	#var name = self.name  # Förväntas vara t.ex. "Player_3"
-	print(name)
-	unit_spawner.spawn_path = NodePath("/root/" + name)
+	#unit_spawner.spawn_path = NodePath("/root/" + name)
 	
 	# Debugutskrift för att se vem som har authority
-	print("Player node ready. peer_id =", multiplayer.get_unique_id(),
-		  "  authority =", get_multiplayer_authority())
 	
 	# Om denna nod är min lokalt (klientens unika ID == authority),
 	# då spawnar jag min enhet:
-	if get_multiplayer_authority() == multiplayer.get_unique_id():
-		spawn_initial_unit()
+	#if get_multiplayer_authority() == multiplayer.get_unique_id():
+		#spawn_initial_unit()
 		
 func spawn_initial_unit():
-	print("spawn")
+	print("Player: spawn, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())
 	#if is_multiplayer_authority():
 	var unit = unit_scene.instantiate()
 	unit.global_position = Vector2.ZERO

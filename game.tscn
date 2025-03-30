@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://b4s3wenyg8wrs"]
+[gd_scene load_steps=12 format=3 uid="uid://b4s3wenyg8wrs"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://game.gd" id="1_fc0e3"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_7jktm"]
 [ext_resource type="Script" uid="uid://bcp3gus4vjqtc" path="res://gui.gd" id="3_ryrav"]
 [ext_resource type="Script" uid="uid://chxk5r6puaa35" path="res://TriangleControl.gd" id="4_eow3j"]
+[ext_resource type="PackedScene" uid="uid://dcjg31qkj8607" path="res://main_menu.tscn" id="5_7jktm"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
 colors = PackedColorArray(0.169245, 0.169245, 0.169245, 1, 0.244776, 0.244776, 0.244776, 1)
@@ -211,6 +212,10 @@ text = "f"
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://b74nujfyhp6qr")
 spawn_path = NodePath("..")
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+
+[node name="Main menu" parent="CanvasLayer2" instance=ExtResource("5_7jktm")]
 
 [connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/Transform_button" to="CanvasLayer/GUI" method="_on_transform_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer/Conduit" to="CanvasLayer/GUI" method="_on_conduit_pressed"]

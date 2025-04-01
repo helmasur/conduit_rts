@@ -1,12 +1,6 @@
 # main_menu.gd
 extends Control
 
-var join_ip: String
-
-func _on_ip_text_submitted(new_text: String) -> void:
-	$"Join Button".disabled = false
-	join_ip = new_text
-
 # Exempel: Starta som host
 func _on_host_button_pressed():
 	MultiplayerManager.host()
@@ -18,7 +12,7 @@ func _on_host_button_pressed():
 
 # Eller klient
 func _on_join_button_pressed():
-	MultiplayerManager.join(join_ip)
+	MultiplayerManager.join($"IP".text)
 	get_parent().visible = false
 	#get_tree().change_scene_to_file("res://game.tscn")
 

@@ -30,6 +30,7 @@ bg_color = Color(0.51, 0.1173, 0.1173, 1)
 script = ExtResource("1_fc0e3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
 

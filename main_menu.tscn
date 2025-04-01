@@ -42,7 +42,6 @@ offset_top = 367.0
 offset_right = 670.0
 offset_bottom = 417.0
 theme_override_font_sizes/font_size = 30
-disabled = true
 text = "Join"
 
 [node name="IP" type="LineEdit" parent="."]
@@ -53,7 +52,6 @@ offset_top = 379.0
 offset_right = 589.0
 offset_bottom = 410.0
 text = "127.0.0.1"
-placeholder_text = "Ex. 192.168.0.100"
 
 [node name="Start Button" type="Button" parent="."]
 visible = false
@@ -67,5 +65,4 @@ text = "Start"
 
 [connection signal="pressed" from="Host Button" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="Join Button" to="." method="_on_join_button_pressed"]
-[connection signal="text_submitted" from="IP" to="." method="_on_ip_text_submitted"]
 [connection signal="pressed" from="Start Button" to="." method="_on_start_button_pressed"]

@@ -4,4 +4,5 @@
 /addons/
 *.tmp
 *.uid
+*.import
 TODO.md

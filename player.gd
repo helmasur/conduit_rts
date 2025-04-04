@@ -20,10 +20,12 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	print("Player: ready, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())
 	if is_multiplayer_authority():
+		get_parent().player = self
 		print("Authority was here")
 		var cam : Camera2D = $"../Camera2D"
 		cam.make_current()
-		spawn_initial_unit()
+		#spawn_initial_unit()
+		spawn_unit(1000, .34, .3, .3, Vector2.ZERO).energy = 1000
 	else:
 		print("Authority was not here")
 	
@@ -39,15 +41,29 @@ func _ready() -> void:
 	#if get_multiplayer_authority() == multiplayer.get_unique_id():
 		#spawn_initial_unit()
 		
-func spawn_initial_unit():
-	print("Player: spawn, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())
-	#if is_multiplayer_authority():
-	var unit = unit_scene.instantiate()
-	unit.global_position = Vector2.ZERO
-	unit.energy = 1000
-	unit.target_energy = 1000
-	unit.player = self
-	add_child(unit)
+#func spawn_initial_unit():
+	#print("Player: spawn, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())
+	##if is_multiplayer_authority():
+	#var unit = unit_scene.instantiate()
+	#unit.global_position = Vector2.ZERO
+	#unit.energy = 1000
+	#unit.target_energy = 1000
+	#unit.player = self
+	#add_child(unit, true)
+	
+func spawn_unit(e: float, h: float, p: float, s: float, pos: Vector2) -> Unit:
+	var new_unit = unit_scene.instantiate() as Unit
+	new_unit.global_position = pos
+	new_unit.target_energy = e
+	new_unit.health_prop = h
+	new_unit.power_prop = p
+	new_unit.speed_prop = s
+	new_unit.target_health_prop = h
+	new_unit.target_power_prop = p
+	new_unit.target_speed_prop = s
+	add_child(new_unit, true)
+	get_parent()._add_unit(new_unit)
+	return new_unit
 
 @rpc("authority", "call_local", "reliable", 0)
 func set_player_energy(value: float) -> void:

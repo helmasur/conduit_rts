@@ -14,8 +14,8 @@ var circle_pos: Vector2 = Vector2.ZERO
 var point_pos: Vector2 = Vector2.ZERO
 var dragging: bool = false
 var highlight: bool = false  
-var current_h: float = 0.33
-var current_p: float = 0.34
+var current_h: float = 0.34 # Current är de värden som handtaget pekar på
+var current_p: float = 0.33
 var current_s: float = 0.33
 
 # Hörn på triangeln (beräknas i _ready)
@@ -176,7 +176,6 @@ func set_point(h: float, p: float, s: float) -> void:
 	var v = s / total
 	var w = p / total
 	
-	# Flytta handtaget till rätt position i triangeln
 	point_pos = _bary_to_point(u, v, w)
 	
 	queue_redraw()

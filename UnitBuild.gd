@@ -1,20 +1,7 @@
 # res://scripts/units/UnitBuild.gd
 class_name UnitBuild
 
-static func start_build(unit: Unit, e: float, h: float, p: float, s: float) -> void:
-	var new_unit = unit.unit_scene.instantiate() as Unit
-	unit.get_tree().current_scene.add_child(new_unit)
-	unit.unit_to_build = new_unit
-	new_unit.player = unit.player
-	new_unit.global_position = unit.global_position + Vector2(50, 0)
-	new_unit.target_energy = e
-	new_unit.health_prop = h
-	new_unit.power_prop = p
-	new_unit.speed_prop = s
-	new_unit.target_health_prop = h
-	new_unit.target_power_prop = p
-	new_unit.target_speed_prop = s
-	unit.conduit_mode = UnitShared.ConduitMode.BUILDING
+
 	
 static func handle_build_state(unit: Unit, delta: float) -> void:
 	match unit.conduit_mode:

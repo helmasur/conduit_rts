@@ -13,7 +13,7 @@ func _process(_delta: float) -> void:
 	selected_units_count = len(selected_units)
 	
 	if player:
-		%Player_energy.text = "Energy pool: " + str(%GUI.player.player_energy)
+		%Player_energy.text = "Energy pool: " + str(get_parent().get_parent().player.player_energy)
 	
 	if selected_units_count == 1:
 		selected_unit = selected_units[0]
@@ -75,3 +75,8 @@ func _on_pop_pressed() -> void:
 	selected_unit.start_build(float(%Pop_energy.text), %TriCon.current_h, %TriCon.current_p, %TriCon.current_s)
 	
 	
+
+
+func _on_build_energy_value_changed(value: float) -> void:
+	%"Energy cost".text = str(value)
+	pass # Replace with function body.

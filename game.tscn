@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://b4s3wenyg8wrs"]
+[gd_scene load_steps=13 format=3 uid="uid://b4s3wenyg8wrs"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://game.gd" id="1_fc0e3"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_7jktm"]
+[ext_resource type="Script" uid="uid://q8q8sbielo7j" path="res://unit_renderer.gd" id="2_ryrav"]
 [ext_resource type="Script" uid="uid://bcp3gus4vjqtc" path="res://gui.gd" id="3_ryrav"]
 [ext_resource type="Script" uid="uid://chxk5r6puaa35" path="res://TriangleControl.gd" id="4_eow3j"]
 [ext_resource type="PackedScene" uid="uid://dcjg31qkj8607" path="res://main_menu.tscn" id="5_7jktm"]
@@ -30,76 +31,169 @@ bg_color = Color(0.51, 0.1173, 0.1173, 1)
 script = ExtResource("1_fc0e3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
 position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
+
+[node name="UnitRenderer" type="Node2D" parent="."]
+script = ExtResource("2_ryrav")
+world_size = Vector2(2048, 2048)
+
+[node name="MultiMeshInstance2D" type="MultiMeshInstance2D" parent="UnitRenderer"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_7jktm")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="GUI" type="CanvasLayer" parent="."]
 
-[node name="GUI" type="Control" parent="CanvasLayer"]
-unique_name_in_owner = true
+[node name="HUD" type="Control" parent="GUI"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
 script = ExtResource("3_ryrav")
 
-[node name="TriCon" type="Control" parent="CanvasLayer/GUI"]
+[node name="MarginContainer" type="MarginContainer" parent="GUI/HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/HUD/MarginContainer"]
+layout_mode = 2
+
+[node name="Row1" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="Player_energy" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row1"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 106.0
+offset_bottom = 23.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Player energy"
+
+[node name="Row2" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="Row3" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+
+[node name="Control2" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 1
+
+[node name="TriCon" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control2"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -196.0
-offset_top = 39.0
-offset_right = -46.0
-offset_bottom = 189.0
-grow_horizontal = 0
-size_flags_horizontal = 4
-size_flags_vertical = 4
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -75.0
+offset_top = -150.0
+offset_right = 75.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1, -1)
+pivot_offset = Vector2(75, 75)
+mouse_filter = 1
 script = ExtResource("4_eow3j")
-color_a = Color(0.514186, 0.488542, 0.803083, 1)
-color_b = Color(0.492755, 0.902826, 0.943716, 1)
-color_c = Color(0.36969, 0.336095, 0.212066, 1)
+color_a = Color(0.5, 0.25, 0.25, 1)
+color_b = Color(0.25, 0.5, 0.25, 1)
+color_c = Color(0.25, 0.25, 0.5, 1)
+metadata/_custom_type_script = "uid://chxk5r6puaa35"
 
-[node name="Player_energy" type="Label" parent="CanvasLayer/GUI"]
+[node name="Polygon2D" type="Polygon2D" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control2/TriCon"]
+show_behind_parent = true
+color = Color(0.679435, 0.338055, 0.320599, 1)
+polygon = PackedVector2Array(0, 0, 150, 0, 75, 130)
+metadata/_edit_lock_ = true
+
+[node name="Control3" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Energy cost" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/VBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 791.0
-offset_top = 24.0
-offset_right = 983.0
-offset_bottom = 47.0
-text = "Player energy"
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 10
+text = "Energy cost"
 
-[node name="Stack" type="VBoxContainer" parent="CanvasLayer/GUI"]
+[node name="Build energy" type="HSlider" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 10
+min_value = 1.0
+max_value = 100000.0
+value = 1.0
+exp_edit = true
+rounded = true
+
+[node name="Stack" type="VBoxContainer" parent="GUI/HUD"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -210.0
-offset_top = 229.0
-offset_right = -18.0
-offset_bottom = 629.0
+offset_left = -183.0
+offset_bottom = 147.0
 grow_horizontal = 0
 
-[node name="Attributes" type="PanelContainer" parent="CanvasLayer/GUI/Stack"]
+[node name="Attributes" type="PanelContainer" parent="GUI/HUD/Stack"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Stack/Attributes"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/HUD/Stack/Attributes"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="GUI/HUD/Stack/Attributes/VBoxContainer"]
 layout_mode = 2
 
-[node name="Energy_prog" type="ProgressBar" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer/MarginContainer"]
+[node name="Energy_prog" type="ProgressBar" parent="GUI/HUD/Stack/Attributes/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 1
@@ -109,115 +203,118 @@ max_value = 1.0
 value = 0.5
 show_percentage = false
 
-[node name="Energy" type="Label" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer/MarginContainer"]
+[node name="Energy" type="Label" parent="GUI/HUD/Stack/Attributes/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Unit Energy:"
 
-[node name="Health" type="ProgressBar" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer"]
+[node name="Health" type="ProgressBar" parent="GUI/HUD/Stack/Attributes/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_1bvp3")
 max_value = 1.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/HUD/Stack/Attributes/VBoxContainer"]
 layout_mode = 2
 
-[node name="Power" type="Label" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer/HBoxContainer"]
+[node name="Power" type="Label" parent="GUI/HUD/Stack/Attributes/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Power"
 horizontal_alignment = 1
 
-[node name="Speed" type="Label" parent="CanvasLayer/GUI/Stack/Attributes/VBoxContainer/HBoxContainer"]
+[node name="Speed" type="Label" parent="GUI/HUD/Stack/Attributes/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Speed"
 horizontal_alignment = 1
 
-[node name="Buttons" type="PanelContainer" parent="CanvasLayer/GUI/Stack"]
+[node name="Buttons" type="PanelContainer" parent="GUI/HUD/Stack"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Stack/Buttons"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/HUD/Stack/Buttons"]
 layout_mode = 2
 
-[node name="Transform_button" type="Button" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer"]
+[node name="Transform_button" type="Button" parent="GUI/HUD/Stack/Buttons/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Transform"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/HUD/Stack/Buttons/VBoxContainer"]
 layout_mode = 2
 
-[node name="Conduit" type="Button" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer"]
+[node name="Conduit" type="Button" parent="GUI/HUD/Stack/Buttons/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Conduit"
 
-[node name="Pop" type="Button" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer"]
+[node name="Pop" type="Button" parent="GUI/HUD/Stack/Buttons/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Pop"
 
-[node name="Pop_energy" type="LineEdit" parent="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer"]
+[node name="Pop_energy" type="LineEdit" parent="GUI/HUD/Stack/Buttons/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Energy"
 emoji_menu_enabled = false
 virtual_keyboard_type = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/Stack"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI/HUD/Stack"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Button" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
+[node name="Button" type="Button" parent="GUI/HUD/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Left click to load"
 
-[node name="Button2" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
+[node name="Button2" type="Button" parent="GUI/HUD/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Right click to save"
 
-[node name="Button3" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
+[node name="Button3" type="Button" parent="GUI/HUD/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "c"
 
-[node name="Button4" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
+[node name="Button4" type="Button" parent="GUI/HUD/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "d"
 
-[node name="Button5" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
+[node name="Button5" type="Button" parent="GUI/HUD/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "e"
 
-[node name="Button6" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
+[node name="Button6" type="Button" parent="GUI/HUD/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "f"
 
-[node name="Button7" type="Button" parent="CanvasLayer/GUI/Stack/VBoxContainer"]
+[node name="Button7" type="Button" parent="GUI/HUD/Stack/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "f"
+
+[node name="Main menu" parent="GUI" instance=ExtResource("5_7jktm")]
+visible = false
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://b74nujfyhp6qr")
 spawn_path = NodePath("..")
 
-[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+[node name="Menu" type="CanvasLayer" parent="."]
+visible = false
 
-[node name="Main menu" parent="CanvasLayer2" instance=ExtResource("5_7jktm")]
-
-[connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/Transform_button" to="CanvasLayer/GUI" method="_on_transform_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer/Conduit" to="CanvasLayer/GUI" method="_on_conduit_pressed"]
-[connection signal="pressed" from="CanvasLayer/GUI/Stack/Buttons/VBoxContainer/HBoxContainer/Pop" to="CanvasLayer/GUI" method="_on_pop_pressed"]
+[connection signal="value_changed" from="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/VBoxContainer/Build energy" to="GUI/HUD" method="_on_build_energy_value_changed"]
+[connection signal="pressed" from="GUI/HUD/Stack/Buttons/VBoxContainer/Transform_button" to="GUI/HUD" method="_on_transform_button_pressed"]
+[connection signal="pressed" from="GUI/HUD/Stack/Buttons/VBoxContainer/HBoxContainer/Conduit" to="GUI/HUD" method="_on_conduit_pressed"]
+[connection signal="pressed" from="GUI/HUD/Stack/Buttons/VBoxContainer/HBoxContainer/Pop" to="GUI/HUD" method="_on_pop_pressed"]

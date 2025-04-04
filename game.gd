@@ -52,14 +52,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		var camera = $Camera2D
 		var click_pos = camera.get_global_mouse_position()
+		click_pos = Utils.wrap_position(click_pos)
+		var clicked_unit = _get_clicked_unit(click_pos)
 		if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-			click_pos = Utils.wrap_position(click_pos)
-			_handle_left_click(click_pos)
-
+			_handle_left_click(click_pos, clicked_unit)
 		elif event.button_index == MouseButton.MOUSE_BUTTON_RIGHT:
-			_handle_right_click(click_pos)
+			_handle_right_click(click_pos, clicked_unit)
 
-func _handle_left_click(world_pos: Vector2) -> void:
+func _get_clicked_unit(world_pos: Vector2):
 	var ui_under_mouse := get_viewport().gui_get_hovered_control()
 	if ui_under_mouse and ui_under_mouse is TriangleControl:
 		return  # Ignorera klick på UI-komponenten
@@ -78,22 +78,29 @@ func _handle_left_click(world_pos: Vector2) -> void:
 		var collider = hit.collider
 		# Om den collider vi träffade är en enhet, markera den
 		if collider is CharacterBody2D:
-			if selected_unit:
-				selected_unit.set_selected(false)
-			collider.set_selected(true)
-			selected_unit = collider
-			%TriCon.set_point(selected_unit.health_prop, selected_unit.power_prop, selected_unit.speed_prop)
-			#%TriCon.set_handle(selected_unit.target_health_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
+			return collider
+		else:
+			return null
+			
+func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
+	if clicked_unit:
+		if selected_unit:
+			selected_unit.set_selected(false)
+		clicked_unit.set_selected(true)
+		selected_unit = clicked_unit
+		%TriCon.set_point(selected_unit.health_prop, selected_unit.power_prop, selected_unit.speed_prop)
+	#%TriCon.set_handle(selected_unit.target_health_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
 	else:
 		for unit in get_tree().get_nodes_in_group("selected_units"):
 			unit.set_selected(false)
 			selected_unit = null
-		
 
-func _handle_right_click(world_pos: Vector2) -> void:
+
+func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 	#print(selected_unit)
 	# Be den valda enheten att förflytta sig
-	if selected_unit:
-		selected_unit.set_destination(world_pos)
-	else:
-		player.spawn_unit(%"Build energy".value, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).energy = 1000
+	if not clicked_unit:
+		if selected_unit:
+			selected_unit.set_destination(world_pos)
+		else:
+			player.spawn_unit(%"Build energy".value, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).energy = 1000

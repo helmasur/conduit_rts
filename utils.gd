@@ -1,3 +1,4 @@
+# utils.gd
 class_name Utils
 
 static func wrap_position(pos: Vector2) -> Vector2:

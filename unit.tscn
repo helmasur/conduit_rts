@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit.gd" id="1_ctwoc"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ctwoc"]
-size = Vector2(32, 32)
+[sub_resource type="CircleShape2D" id="CircleShape2D_btf8p"]
+radius = 25.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ctwoc"]
 radius = 300.0
@@ -14,8 +14,7 @@ wall_min_slide_angle = 0.0
 script = ExtResource("1_ctwoc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-shape = SubResource("RectangleShape2D_ctwoc")
+shape = SubResource("CircleShape2D_btf8p")
 
 [node name="Area2D" type="Area2D" parent="."]
 

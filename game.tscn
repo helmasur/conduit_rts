@@ -36,7 +36,6 @@ texture = SubResource("NoiseTexture2D_1bvp3")
 
 [node name="UnitRenderer" type="Node2D" parent="."]
 script = ExtResource("2_ryrav")
-world_size = Vector2(2048, 2048)
 
 [node name="MultiMeshInstance2D" type="MultiMeshInstance2D" parent="UnitRenderer"]
 

@@ -1,6 +1,8 @@
+# unit_renderer.gd
 extends Node2D
 
-@export var world_size: Vector2 = Vector2(1024, 1024)
+@export var world_size: Vector2 = Vector2(2048, 2048)
+
 @export var mesh_size: float = 30.0
 
 @onready var mm_instance := $MultiMeshInstance2D

@@ -6,9 +6,13 @@ var tricon_h: float = .33
 @export var player_scene: PackedScene = preload("res://player.tscn")
 var player: Player
 var units = [Unit]
+var world_size: Vector2 = Vector2(2048,2048)
 
 func _ready():
-	pass
+	for offs in Utils.get_toroid_copies(world_size):
+		var copy = $Background.duplicate()
+		copy.position = $Background.position+offs
+		add_child(copy)
 	#_on_game_started()
 		##get_tree().connect("peer_connected", Callable(self, "_on_network_peer_connected"))
 		#var mp = get_tree().get_multiplayer()

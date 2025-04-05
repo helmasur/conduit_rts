@@ -8,13 +8,25 @@
 [ext_resource type="PackedScene" uid="uid://dcjg31qkj8607" path="res://main_menu.tscn" id="5_7jktm"]
 
 [sub_resource type="Gradient" id="Gradient_0xm2m"]
-colors = PackedColorArray(0.169245, 0.169245, 0.169245, 1, 0.244776, 0.244776, 0.244776, 1)
+colors = PackedColorArray(0.16, 0.12528, 0.1104, 1, 0.55, 0.55, 0.55, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_h2yge"]
+noise_type = 0
+frequency = 0.0015
+fractal_octaves = 7
+fractal_lacunarity = 3.0
+fractal_gain = 0.6
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 75.0
+domain_warp_frequency = 0.027
+domain_warp_fractal_type = 0
+domain_warp_fractal_lacunarity = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1bvp3"]
 width = 2048
 height = 2048
+seamless = true
 color_ramp = SubResource("Gradient_0xm2m")
 noise = SubResource("FastNoiseLite_h2yge")
 
@@ -30,7 +42,8 @@ bg_color = Color(0.51, 0.1173, 0.1173, 1)
 [node name="Game" type="Node2D"]
 script = ExtResource("1_fc0e3")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="."]
+show_behind_parent = true
 position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
 

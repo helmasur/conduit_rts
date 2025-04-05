@@ -53,6 +53,11 @@ func _ready() -> void:
 	#$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
 	var renderer = get_tree().get_root().get_node("Game/UnitRenderer")
 	renderer.register_unit(self)
+	
+	for offs in Utils.get_toroid_copies(get_parent().world_size):
+		var copy = $EnergyParticles.duplicate()
+		copy.position = position+offs
+		add_child(copy)
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return

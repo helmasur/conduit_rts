@@ -87,3 +87,16 @@ static func get_toroid_copies(world_size: Vector2) -> Array[Vector2]:
 		Vector2(world_size.x, world_size.y),
 		Vector2(0, 0)
 	]
+
+static func get_unit_at_wrapped_position(pos: Vector2, world_size: Vector2) -> Node:
+	var space_state = Engine.get_main_loop().root.world_2d.direct_space_state
+	var query = PhysicsPointQueryParameters2D.new()
+
+	for offset in get_toroid_offsets(world_size):
+		query.position = pos + offset
+		var results = space_state.intersect_point(query)
+		if results.size() > 0:
+			for result in results:
+				if result.collider.is_in_group("units"):
+					return result.collider
+	return null

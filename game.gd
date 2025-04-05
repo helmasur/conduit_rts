@@ -13,6 +13,7 @@ func _ready():
 		var copy = $Background.duplicate()
 		copy.position = $Background.position+offs
 		add_child(copy)
+		pass
 	#_on_game_started()
 		##get_tree().connect("peer_connected", Callable(self, "_on_network_peer_connected"))
 		#var mp = get_tree().get_multiplayer()
@@ -55,36 +56,23 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 	if event is InputEventMouseButton and event.pressed:
 		var camera = $Camera2D
-		var click_pos = camera.get_global_mouse_position()
-		click_pos = Utils.wrap_position(click_pos)
-		var clicked_unit = _get_clicked_unit(click_pos)
-		if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-			_handle_left_click(click_pos, clicked_unit)
-		elif event.button_index == MouseButton.MOUSE_BUTTON_RIGHT:
-			_handle_right_click(click_pos, clicked_unit)
+		var mouse_pos = camera.get_global_mouse_position()
 
-func _get_clicked_unit(world_pos: Vector2):
-	var ui_under_mouse := get_viewport().gui_get_hovered_control()
-	if ui_under_mouse and ui_under_mouse is TriangleControl:
-		return  # Ignorera klick på UI-komponenten
-	#if ui_under_mouse and ui_under_mouse.is_in_group("ui"): # Sparas, kan vara bra senare.
-	
-	# Skapa query-objekt för punktintersektion
-	var space_state = get_world_2d().direct_space_state
-	var query = PhysicsPointQueryParameters2D.new()
-	query.position = world_pos
-	
-	# Kör intersect_point
-	var results = space_state.intersect_point(query)
-	if results.size() > 0:
-		# Ta den första träffen
-		var hit = results[0]
-		var collider = hit.collider
-		# Om den collider vi träffade är en enhet, markera den
-		if collider is CharacterBody2D:
-			return collider
-		else:
-			return null
+		# Kontrollera UI först
+		var ui_under_mouse := get_viewport().gui_get_hovered_control()
+		if ui_under_mouse and ui_under_mouse is TriangleControl:
+			return
+
+		var world_size = Vector2(2048, 2048)  # Kan hämtas från Player om du vill
+		var clicked_unit = Utils.get_unit_at_wrapped_position(mouse_pos, world_size)
+
+		var wrapped_pos = Utils.wrap_position(mouse_pos)
+
+		if event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+			_handle_left_click(wrapped_pos, clicked_unit)
+		elif event.button_index == MouseButton.MOUSE_BUTTON_RIGHT:
+			_handle_right_click(wrapped_pos, clicked_unit)
+
 			
 func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 	if clicked_unit:

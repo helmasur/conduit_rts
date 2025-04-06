@@ -1,0 +1,16 @@
+[gd_resource type="ParticleProcessMaterial" format=3 uid="uid://cw3fqy1v1q5oa"]
+
+[resource]
+resource_local_to_scene = true
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 0.0
+emission_ring_radius = 50.0
+emission_ring_inner_radius = 30.0
+emission_ring_cone_angle = 90.0
+orbit_velocity_min = -1.0
+orbit_velocity_max = 1.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.05
+scale_max = 0.1

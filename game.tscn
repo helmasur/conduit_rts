@@ -48,6 +48,8 @@ position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
 
 [node name="UnitRenderer" type="Node2D" parent="."]
+visible = false
+z_index = 2
 script = ExtResource("2_ryrav")
 
 [node name="MultiMeshInstance2D" type="MultiMeshInstance2D" parent="UnitRenderer"]

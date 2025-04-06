@@ -55,7 +55,7 @@ func _ready() -> void:
 	renderer.register_unit(self)
 	
 	for offs in Utils.get_toroid_copies(get_parent().world_size):
-		var copy = $EnergyParticles.duplicate()
+		var copy = $Graphics.duplicate()
 		copy.position = offs
 		add_child(copy)
 

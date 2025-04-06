@@ -4,13 +4,14 @@ class_name Player
 var player_energy: float = 100.0
 
 @export var player_color: Color = Color.DEEP_PINK
-@export var world_size = Vector2(2048, 2048)
+var world_size: Vector2
 var unit_scene = preload("res://unit.tscn")
 @onready var unit_spawner = $UnitSpawner
 
 var id: int
 
 func _enter_tree() -> void:
+	world_size = get_parent().world_size
 	pass
 	#if not is_multiplayer_authority(): return
 	#print("Player: et, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())

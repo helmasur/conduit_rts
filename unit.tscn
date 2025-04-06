@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bxnd7hcypruou"]
+[gd_scene load_steps=7 format=3 uid="uid://bxnd7hcypruou"]
 
 [ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit.gd" id="1_ctwoc"]
 
@@ -8,9 +8,13 @@ radius = 25.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_ctwoc"]
 radius = 300.0
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_btf8p"]
-width = 2
-height = 2
+[sub_resource type="Gradient" id="Gradient_btf8p"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ctwoc"]
+gradient = SubResource("Gradient_btf8p")
+width = 1
+height = 1
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ctwoc"]
 particle_flag_disable_z = true
@@ -46,7 +50,7 @@ shape = SubResource("CircleShape2D_ctwoc")
 
 [node name="EnergyParticles" type="GPUParticles2D" parent="."]
 amount = 256
-texture = SubResource("NoiseTexture2D_btf8p")
+texture = SubResource("GradientTexture2D_ctwoc")
 process_material = SubResource("ParticleProcessMaterial_ctwoc")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

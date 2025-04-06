@@ -84,8 +84,7 @@ static func get_toroid_copies(world_size: Vector2) -> Array[Vector2]:
 		Vector2(world_size.x, 0),
 		Vector2(-world_size.x, world_size.y),
 		Vector2(0, world_size.y),
-		Vector2(world_size.x, world_size.y),
-		Vector2(0, 0)
+		Vector2(world_size.x, world_size.y)
 	]
 
 static func get_unit_at_wrapped_position(pos: Vector2, world_size: Vector2) -> Node:

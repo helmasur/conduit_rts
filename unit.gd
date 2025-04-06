@@ -56,7 +56,7 @@ func _ready() -> void:
 	
 	for offs in Utils.get_toroid_copies(get_parent().world_size):
 		var copy = $EnergyParticles.duplicate()
-		copy.position = position+offs
+		copy.position = offs
 		add_child(copy)
 
 func _physics_process(delta: float) -> void:

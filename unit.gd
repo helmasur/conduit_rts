@@ -5,11 +5,11 @@ class_name Unit
 var unit_scene = preload("res://unit.tscn")
 var player : Player
 
-var target_energy: float = 0.0
-var energy: float = 0.0
-var health_max: float
-var health_current: float = 1
-var power: float
+var energy_max: float
+var energy: float = 1
+var defense: float = 0
+var power: float = 0
+var speed: float = 0
 
 @export var speed_factor: float = 2
 @export var base_collect_rate: float = 5.0
@@ -19,13 +19,13 @@ var transform_amount: float = 0.0
 var transform_current: float
 var fsf: float
 
-@export var health_prop: float = 0.5
-@export var power_prop: float = 0.2
-@export var speed_prop: float = 0.3
-var target_health_prop: float
+var defense_prop: float = 0.5
+var power_prop: float = 0.2
+var speed_prop: float = 0.3
+var target_defense_prop: float
 var target_power_prop: float
 var target_speed_prop: float
-var old_health_prop: float
+var old_defense_prop: float
 var old_power_prop: float
 var old_speed_prop: float
 
@@ -43,38 +43,33 @@ var multimesh_instance_indices: Array = []
 var player_color = Color.YELLOW_GREEN
 
 func _ready() -> void:
-	target_health_prop = health_prop
+	target_defense_prop = defense_prop
 	target_speed_prop = speed_prop
 	target_power_prop = power_prop
-	health_max = UnitAttributes.get_health_max(self)
-	health_current = health_max / 2 ##for testing
 	add_to_group("units")
 	destination = global_position
 	#$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
 	var renderer = get_tree().get_root().get_node("Game/UnitRenderer")
 	renderer.register_unit(self)
 	
+	$Graphics.add_to_group("unit_graphics")
 	for offs in Utils.get_toroid_copies(get_parent().world_size):
 		var copy = $Graphics.duplicate()
 		copy.position = offs
+		copy.add_to_group("unit_graphics")
 		add_child(copy)
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	handle_state_machine(delta)
 	if speed_prop < 0.01: destination = global_position
-	if energy < target_energy:
-		# Enheten ej färdigbyggd
-		mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
-	elif health_prop > 0.99:
-		# Conduit mode
+	if defense_prop > 0.99:
 		mode = UnitShared.ActionMode.CONDUIT
 	else:
 		mode = UnitShared.ActionMode.FREE
 		
 	if mode == UnitShared.ActionMode.FREE:
 		var dist = destination.distance_to(global_position)
-		var speed = UnitAttributes.get_speed_value(self)
 		if dist > 2.0:
 			var dir = Utils.toroid_direction(global_position, destination, get_parent().world_size).normalized()
 			velocity = dir * speed
@@ -100,6 +95,10 @@ func _physics_process(delta: float) -> void:
 		destination = Utils.wrap_position(destination)
 
 	UnitAttributes.update_proportions(self, delta)
+	for graphics in get_tree().get_nodes_in_group("unit_graphics"):
+		graphics.get_child(2).amount_ratio = defense_prop
+		graphics.get_child(3).amount_ratio = speed_prop
+		graphics.get_child(4).amount_ratio = power_prop
 
 	if self. is_in_group("selected") or mode == UnitShared.ActionMode.CONDUIT:
 		var units = get_tree().get_nodes_in_group("units")
@@ -113,6 +112,8 @@ func _draw() -> void:
 func handle_state_machine(delta: float) -> void:
 	match mode:
 		UnitShared.ActionMode.CONDUIT:
+			for graphics in get_tree().get_nodes_in_group("unit_graphics"):
+				graphics.get_child(0).visible = true
 			match conduit_mode:
 				UnitShared.ConduitMode.COLLECTING:
 					#UnitCollect.handle_collect_state(self, delta)
@@ -122,10 +123,14 @@ func handle_state_machine(delta: float) -> void:
 					UnitBuild.handle_build_state(self, delta)
 			
 		UnitShared.ActionMode.UNDER_CONSTRUCTION:
+			for graphics in get_tree().get_nodes_in_group("unit_graphics"):
+				graphics.get_child(0).visible = false
 			pass
 
 		_:
 			# ActionMode.FREE eller annat
+			for graphics in get_tree().get_nodes_in_group("unit_graphics"):
+				graphics.get_child(0).visible = false
 			pass
 
 func set_selected(selected: bool) -> void:

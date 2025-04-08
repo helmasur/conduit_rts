@@ -190,6 +190,8 @@ shape = SubResource("CircleShape2D_ctwoc")
 [node name="Graphics" type="Node2D" parent="."]
 
 [node name="ConduitArea" type="Sprite2D" parent="Graphics"]
+visible = false
+z_index = 1
 texture = SubResource("GradientTexture2D_1sk4h")
 
 [node name="EnergyParticles" type="GPUParticles2D" parent="Graphics/ConduitArea"]
@@ -204,31 +206,35 @@ draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_ctwoc")
 
 [node name="Body" type="Sprite2D" parent="Graphics"]
+z_index = 2
 scale = Vector2(0.5, 0.5)
 texture = SubResource("GradientTexture2D_5wnup")
 
-[node name="Shield" type="GPUParticles2D" parent="Graphics"]
+[node name="ShieldRing" type="GPUParticles2D" parent="Graphics"]
+z_index = 2
 amount = 64
+amount_ratio = 0.33
 texture = ExtResource("2_ctwoc")
 lifetime = 10.0
 preprocess = 10.0
-local_coords = true
 draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_davkp")
 
 [node name="SpeedRing" type="GPUParticles2D" parent="Graphics"]
+z_index = 2
 amount = 256
+amount_ratio = 0.33
 texture = SubResource("GradientTexture2D_baxm0")
-local_coords = true
 draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_yjdlg")
 
 [node name="PowerRing" type="GPUParticles2D" parent="Graphics"]
+z_index = 2
 amount = 128
+amount_ratio = 0.33
 texture = SubResource("GradientTexture2D_f764t")
 lifetime = 5.0
 preprocess = 5.0
-local_coords = true
 draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_y43xi")
 

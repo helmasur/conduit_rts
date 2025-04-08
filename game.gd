@@ -66,7 +66,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		if ui_under_mouse and ui_under_mouse is TriangleControl:
 			return
 
-		var world_size = Vector2(2048, 2048)  # Kan hämtas från Player om du vill
 		var clicked_unit = Utils.get_unit_at_wrapped_position(mouse_pos, world_size)
 
 		var wrapped_pos = Utils.wrap_position(mouse_pos)
@@ -83,8 +82,8 @@ func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 			selected_unit.set_selected(false)
 		clicked_unit.set_selected(true)
 		selected_unit = clicked_unit
-		%TriCon.set_point(selected_unit.health_prop, selected_unit.power_prop, selected_unit.speed_prop)
-	#%TriCon.set_handle(selected_unit.target_health_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
+		%TriCon.set_point(selected_unit.defense_prop, selected_unit.power_prop, selected_unit.speed_prop)
+	#%TriCon.set_handle(selected_unit.target_defense_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
 	else:
 		for unit in get_tree().get_nodes_in_group("selected_units"):
 			unit.set_selected(false)
@@ -98,4 +97,7 @@ func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 		if selected_unit:
 			selected_unit.set_destination(world_pos)
 		else:
-			player.spawn_unit(%"Build energy".value, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).energy = 1000
+			var e = %"Build energy".value
+			if player.player_energy >= e:
+				player.player_energy -= e
+				player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION

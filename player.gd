@@ -1,7 +1,7 @@
 extends Node2D
 class_name Player
 
-var player_energy: float = 100.0
+var player_energy: float = 10000.0
 
 @export var player_color: Color = Color.DEEP_PINK
 var world_size: Vector2
@@ -48,18 +48,18 @@ func _ready() -> void:
 	#var unit = unit_scene.instantiate()
 	#unit.global_position = Vector2.ZERO
 	#unit.energy = 1000
-	#unit.target_energy = 1000
+	#unit.energy_max = 1000
 	#unit.player = self
 	#add_child(unit, true)
 	
 func spawn_unit(e: float, h: float, p: float, s: float, pos: Vector2) -> Unit:
 	var new_unit = unit_scene.instantiate() as Unit
 	new_unit.global_position = pos
-	new_unit.target_energy = e
-	new_unit.health_prop = h
+	new_unit.energy_max = e
+	new_unit.defense_prop = h
 	new_unit.power_prop = p
 	new_unit.speed_prop = s
-	new_unit.target_health_prop = h
+	new_unit.target_defense_prop = h
 	new_unit.target_power_prop = p
 	new_unit.target_speed_prop = s
 	add_child(new_unit, true)

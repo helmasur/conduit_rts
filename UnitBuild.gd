@@ -27,13 +27,13 @@ static func handle_build_state(unit: Unit, delta: float) -> void:
 				var transfer_amount = unit.build_transfer_rate * delta
 				if unit.get_parent().player_energy < transfer_amount:
 					transfer_amount = unit.get_parent().player_energy
-				var needed = unit.unit_to_build.target_energy - unit.unit_to_build.energy
+				var needed = unit.unit_to_build.energy_max - unit.unit_to_build.energy
 				if needed < transfer_amount:
 					transfer_amount = needed
 				if transfer_amount > 0:
 					unit.unit_to_build.energy += transfer_amount
 					unit.get_parent().player_energy -= transfer_amount
-				if unit.unit_to_build.energy >= unit.unit_to_build.target_energy:
+				if unit.unit_to_build.energy >= unit.unit_to_build.energy_max:
 					#UnitAttributes.normalize_proportions(unit.unit_to_build)
 					#unit.unit_to_build.mode = UnitShared.ActionMode.FREE
 					#unit.unit_to_build.build_finished()

@@ -34,8 +34,8 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
 [sub_resource type="Curve" id="Curve_btf8p"]
-_data = [Vector2(0, 1), 0.0, -100000.0, 0, 1, Vector2(1e-05, 0), -100000.0, 0.0, 1, 0]
-point_count = 2
+_data = [Vector2(0, 0), 0.0, 6.01803, 0, 0, Vector2(0.249221, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.33195, 0.0, 1, 0]
+point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_ctwoc"]
 curve = SubResource("Curve_btf8p")
@@ -55,8 +55,8 @@ angular_velocity_max = -1.60933e-05
 orbit_velocity_min = 9.49949e-08
 orbit_velocity_max = 9.49949e-08
 gravity = Vector3(0, 0, 0)
-radial_accel_min = -50.0
-radial_accel_max = -50.0
+radial_accel_min = -10.0
+radial_accel_max = -10.0
 alpha_curve = SubResource("CurveTexture_ctwoc")
 hue_variation_min = -2.23517e-08
 hue_variation_max = -2.23517e-08
@@ -190,17 +190,17 @@ shape = SubResource("CircleShape2D_ctwoc")
 [node name="Graphics" type="Node2D" parent="."]
 
 [node name="ConduitArea" type="Sprite2D" parent="Graphics"]
-visible = false
 texture = SubResource("GradientTexture2D_1sk4h")
 
 [node name="EnergyParticles" type="GPUParticles2D" parent="Graphics/ConduitArea"]
 z_index = 1
-amount = 1000
+amount = 16
 texture = SubResource("GradientTexture2D_ctwoc")
-lifetime = 75.0
+lifetime = 5.0
 randomness = 1.0
 use_fixed_seed = true
 seed = 2367292610
+draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_ctwoc")
 
 [node name="Body" type="Sprite2D" parent="Graphics"]
@@ -213,12 +213,14 @@ texture = ExtResource("2_ctwoc")
 lifetime = 10.0
 preprocess = 10.0
 local_coords = true
+draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_davkp")
 
 [node name="SpeedRing" type="GPUParticles2D" parent="Graphics"]
 amount = 256
 texture = SubResource("GradientTexture2D_baxm0")
 local_coords = true
+draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_yjdlg")
 
 [node name="PowerRing" type="GPUParticles2D" parent="Graphics"]
@@ -227,6 +229,7 @@ texture = SubResource("GradientTexture2D_f764t")
 lifetime = 5.0
 preprocess = 5.0
 local_coords = true
+draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_y43xi")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

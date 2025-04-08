@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://bxnd7hcypruou"]
+[gd_scene load_steps=27 format=3 uid="uid://bxnd7hcypruou"]
 
 [ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit.gd" id="1_ctwoc"]
 [ext_resource type="Texture2D" uid="uid://dny5cnj0cc8i6" path="res://ring_tex.tres" id="2_ctwoc"]
@@ -76,8 +76,16 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
+[sub_resource type="Curve" id="Curve_ctwoc"]
+_data = [Vector2(0, 0), 0.0, 4.0125, 0, 1, Vector2(0.249221, 1), 0.0, 0.0, 0, 0, Vector2(0.753894, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -4.06329, 0.0, 1, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_davkp"]
+curve = SubResource("Curve_ctwoc")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_davkp"]
 resource_local_to_scene = true
+particle_flag_align_y = true
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -85,11 +93,13 @@ emission_ring_height = 0.0
 emission_ring_radius = 30.0
 emission_ring_inner_radius = 30.0
 emission_ring_cone_angle = 90.0
-orbit_velocity_min = -0.0499999
-orbit_velocity_max = 0.0500001
+orbit_velocity_min = -0.0199999
+orbit_velocity_max = -0.00999991
 gravity = Vector3(0, 0, 0)
+attractor_interaction_enabled = false
 scale_min = 0.1
 scale_max = 0.15
+alpha_curve = SubResource("CurveTexture_davkp")
 
 [sub_resource type="Gradient" id="Gradient_1sk4h"]
 interpolation_mode = 2
@@ -105,8 +115,8 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
 [sub_resource type="Curve" id="Curve_of1k5"]
-_data = [Vector2(0, 0), 0.0, 1.99379, 0, 1, Vector2(0.501558, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.00625, 0.0, 1, 0]
-point_count = 3
+_data = [Vector2(0, 0.643391), 0.0, 0.0, 0, 0, Vector2(0.168224, 1), 0.0, 0.0, 0, 0, Vector2(0.314642, 0.643391), 0.0, 0.0, 0, 0, Vector2(0.482866, 1), 0.0, 0.0, 0, 0, Vector2(0.647975, 0.700125), 0.0, 0.0, 0, 0, Vector2(0.853583, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.659601), 0.0, 0.0, 0, 0]
+point_count = 7
 
 [sub_resource type="CurveTexture" id="CurveTexture_74e6i"]
 curve = SubResource("Curve_of1k5")
@@ -121,8 +131,8 @@ emission_ring_radius = 35.0
 emission_ring_inner_radius = 35.0
 emission_ring_cone_angle = 90.0
 gravity = Vector3(0, 0, 0)
-scale_min = 0.15
-scale_max = 0.15
+scale_min = 0.1
+scale_max = 0.1
 alpha_curve = SubResource("CurveTexture_74e6i")
 
 [sub_resource type="Gradient" id="Gradient_ltb4x"]
@@ -198,24 +208,21 @@ scale = Vector2(0.5, 0.5)
 texture = SubResource("GradientTexture2D_5wnup")
 
 [node name="Shield" type="GPUParticles2D" parent="Graphics"]
-amount = 256
+amount = 64
 texture = ExtResource("2_ctwoc")
-lifetime = 5.0
-preprocess = 5.0
+lifetime = 10.0
+preprocess = 10.0
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_davkp")
 
 [node name="SpeedRing" type="GPUParticles2D" parent="Graphics"]
-amount = 500
-amount_ratio = 0.1777
+amount = 256
 texture = SubResource("GradientTexture2D_baxm0")
-lifetime = 4.0
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_yjdlg")
 
 [node name="PowerRing" type="GPUParticles2D" parent="Graphics"]
-amount = 256
-amount_ratio = 0.0863
+amount = 128
 texture = SubResource("GradientTexture2D_f764t")
 lifetime = 5.0
 preprocess = 5.0

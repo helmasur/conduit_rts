@@ -31,8 +31,8 @@ var old_speed_prop: float
 
 var destination: Vector2
 var nearby_units: Array = []
-var build_queue: Array = []
-var unit_to_build: Unit = null
+var repair_queue: Array = []
+#var unit_to_build: Unit = null
 var unit_to_attack: Unit = null
 var unit_to_repair: Unit = null
 
@@ -114,6 +114,10 @@ func handle_state_machine(delta: float) -> void:
 		UnitShared.ActionMode.CONDUIT:
 			for graphics in get_tree().get_nodes_in_group("unit_graphics"):
 				graphics.get_child(0).visible = true
+			if len(repair_queue) > 0:
+				conduit_mode = UnitShared.ConduitMode.BUILDING
+			else:
+				conduit_mode = UnitShared.ConduitMode.COLLECTING
 			match conduit_mode:
 				UnitShared.ConduitMode.COLLECTING:
 					#UnitCollect.handle_collect_state(self, delta)
@@ -148,14 +152,17 @@ func set_destination(pos: Vector2) -> void:
 func apply_damage(amount: float) -> void:
 	UnitAttributes.apply_damage(self, amount)
 
-func _on_area_2d_body_entered(body: Node2D) -> void:
-	if body is Unit and body != self:
-		nearby_units.append(body)
+func _on_area_2d_body_entered(unit: Node2D) -> void:
+	if unit is Unit and unit != self:
+		nearby_units.append(unit)
+		if unit.energy < energy_max:
+			repair_queue.append(unit)
 	else: return
 
-func _on_area_2d_body_exited(body: Node2D) -> void:
-	if body is Unit:
-		nearby_units.erase(body)
-	if unit_to_attack == body: unit_to_attack = null
-	if unit_to_repair == body: unit_to_repair = null
+func _on_area_2d_body_exited(unit: Node2D) -> void:
+	if unit is Unit:
+		nearby_units.erase(unit)
+		repair_queue.erase(unit)
+	if unit_to_repair == unit: unit_to_repair = null
+	#if unit_to_attack == unit: unit_to_attack = null
 	

@@ -23,22 +23,19 @@ static func handle_build_state(unit: Unit, delta: float) -> void:
 				#unit.mode_timer = 0
 
 		UnitShared.ConduitMode.BUILDING:
-			if unit.unit_to_build:
-				var transfer_amount = unit.build_transfer_rate * delta
-				if unit.get_parent().player_energy < transfer_amount:
-					transfer_amount = unit.get_parent().player_energy
-				var needed = unit.unit_to_build.energy_max - unit.unit_to_build.energy
-				if needed < transfer_amount:
-					transfer_amount = needed
-				if transfer_amount > 0:
-					unit.unit_to_build.energy += transfer_amount
-					unit.get_parent().player_energy -= transfer_amount
-				if unit.unit_to_build.energy >= unit.unit_to_build.energy_max:
-					#UnitAttributes.normalize_proportions(unit.unit_to_build)
-					#unit.unit_to_build.mode = UnitShared.ActionMode.FREE
-					#unit.unit_to_build.build_finished()
-					unit.unit_to_build = null
-					unit.conduit_mode = UnitShared.ConduitMode.COLLECTING
+			var transfer_amount = unit.build_transfer_rate * delta
+			if unit.get_parent().player_energy < transfer_amount:
+				transfer_amount = unit.get_parent().player_energy
+			var needed = unit.repair_queue[0].energy_max - unit.repair_queue[0].energy
+			if needed < transfer_amount:
+				transfer_amount = needed
+			if transfer_amount > 0:
+				unit.repair_queue[0].energy += transfer_amount
+				unit.get_parent().player_energy -= transfer_amount
+			if unit.repair_queue[0].energy >= unit.repair_queue[0].energy_max:
+				unit.repair_queue[0].mode = UnitShared.ActionMode.FREE
+				unit.repair_queue.pop_front()
+				#unit.conduit_mode = UnitShared.ConduitMode.COLLECTING
 
 		#UnitShared.ConduitMode.BUILD_STOPPING:
 			#unit.mode_timer -= delta

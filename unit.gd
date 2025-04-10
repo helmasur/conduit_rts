@@ -5,7 +5,7 @@ class_name Unit
 var unit_scene = preload("res://unit.tscn")
 var player : Player
 
-var energy_max: float
+var energy_max: float = 1
 var energy: float = 1
 var defense: float = 0
 var power: float = 0
@@ -46,6 +46,10 @@ func _ready() -> void:
 	target_defense_prop = defense_prop
 	target_speed_prop = speed_prop
 	target_power_prop = power_prop
+	defense = defense_prop * energy_max
+	power = power_prop * energy_max
+	speed = speed_prop * energy_max
+	
 	add_to_group("units")
 	destination = global_position
 	#$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))

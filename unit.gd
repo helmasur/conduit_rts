@@ -34,6 +34,7 @@ var nearby_units: Array = []
 var repair_queue: Array = []
 #var unit_to_build: Unit = null
 var unit_to_attack: Unit = null
+var attack_range: float = 500
 var unit_to_repair: Unit = null
 
 var mode: int = UnitShared.ActionMode.FREE
@@ -41,14 +42,13 @@ var conduit_mode: int = UnitShared.ConduitMode.COLLECTING
 var is_selected: bool = false
 var multimesh_instance_indices: Array = []
 var player_color = Color.YELLOW_GREEN
+var graphics_array: Array = []
 
 func _ready() -> void:
 	target_defense_prop = defense_prop
 	target_speed_prop = speed_prop
 	target_power_prop = power_prop
-	defense = defense_prop * energy_max
-	power = power_prop * energy_max
-	speed = speed_prop * energy_max
+	_update_attributes()
 	
 	add_to_group("units")
 	destination = global_position
@@ -56,22 +56,20 @@ func _ready() -> void:
 	var renderer = get_tree().get_root().get_node("Game/UnitRenderer")
 	renderer.register_unit(self)
 	
-	$Graphics.add_to_group("unit_graphics")
+	graphics_array.append($Graphics)
 	for offs in Utils.get_toroid_copies(get_parent().world_size):
 		var copy = $Graphics.duplicate()
 		copy.position = offs
-		copy.add_to_group("unit_graphics")
+		graphics_array.append(copy)
 		add_child(copy)
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	handle_state_machine(delta)
+	_update_attributes()
 	if speed_prop < 0.01: destination = global_position
 	if defense_prop > 0.99:
 		mode = UnitShared.ActionMode.CONDUIT
-	else:
-		mode = UnitShared.ActionMode.FREE
-		
 	if mode == UnitShared.ActionMode.FREE:
 		var dist = destination.distance_to(global_position)
 		if dist > 2.0:
@@ -99,7 +97,7 @@ func _physics_process(delta: float) -> void:
 		destination = Utils.wrap_position(destination)
 
 	UnitAttributes.update_proportions(self, delta)
-	for graphics in get_tree().get_nodes_in_group("unit_graphics"):
+	for graphics in graphics_array:
 		graphics.get_child(2).amount_ratio = defense_prop
 		graphics.get_child(3).amount_ratio = speed_prop
 		graphics.get_child(4).amount_ratio = power_prop
@@ -116,7 +114,12 @@ func _draw() -> void:
 func handle_state_machine(delta: float) -> void:
 	match mode:
 		UnitShared.ActionMode.CONDUIT:
-			for graphics in get_tree().get_nodes_in_group("unit_graphics"):
+			if defense_prop < 0.99:
+				mode = UnitShared.ActionMode.FREE
+				for graphics in graphics_array:
+					graphics.get_child(0).visible = false
+				return
+			for graphics in graphics_array:
 				graphics.get_child(0).visible = true
 			if len(repair_queue) > 0:
 				conduit_mode = UnitShared.ConduitMode.BUILDING
@@ -131,14 +134,15 @@ func handle_state_machine(delta: float) -> void:
 					UnitBuild.handle_build_state(self, delta)
 			
 		UnitShared.ActionMode.UNDER_CONSTRUCTION:
-			for graphics in get_tree().get_nodes_in_group("unit_graphics"):
-				graphics.get_child(0).visible = false
 			pass
-
+		UnitShared.ActionMode.ATTACKING:
+			if unit_to_attack:
+				unit_to_attack.apply_damage(power * delta)
+			else:
+				mode = UnitShared.ActionMode.FREE
+				
 		_:
 			# ActionMode.FREE eller annat
-			for graphics in get_tree().get_nodes_in_group("unit_graphics"):
-				graphics.get_child(0).visible = false
 			pass
 
 func set_selected(selected: bool) -> void:
@@ -149,12 +153,27 @@ func set_selected(selected: bool) -> void:
 		self.remove_from_group("selected_units")
 
 func set_destination(pos: Vector2) -> void:
-	destination = pos
+	if mode == UnitShared.ActionMode.FREE or mode == UnitShared.ActionMode.ATTACKING:
+		mode = UnitShared.ActionMode.FREE
+		destination = pos
+		unit_to_attack = null
+	
 
-
+func request_attack(unit: Unit):
+	if mode == UnitShared.ActionMode.FREE or mode == UnitShared.ActionMode.ATTACKING:
+		if Utils.toroid_distance(global_position, unit.global_position, get_parent().world_size) <= attack_range:
+			mode = UnitShared.ActionMode.ATTACKING
+			unit_to_attack = unit
 
 func apply_damage(amount: float) -> void:
-	UnitAttributes.apply_damage(self, amount)
+	energy -= (amount / defense)
+	if energy <= 0:
+		queue_free()
+		
+func _update_attributes():
+	defense = defense_prop * energy_max
+	power = power_prop * energy_max
+	speed = speed_prop * energy_max
 
 func _on_area_2d_body_entered(unit: Node2D) -> void:
 	if unit is Unit and unit != self:

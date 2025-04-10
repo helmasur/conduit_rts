@@ -2,7 +2,7 @@
 extends Node2D
 
 var world_size: Vector2
-var selected_unit: Node = null
+var selected_unit: Unit = null
 var tricon_h: float = .33
 var player_scene: PackedScene = preload("res://player.tscn")
 var player: Player
@@ -93,11 +93,18 @@ func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 	#print(selected_unit)
 	# Be den valda enheten att förflytta sig
-	if not clicked_unit:
-		if selected_unit:
-			selected_unit.set_destination(world_pos)
+	if selected_unit:
+		if clicked_unit:
+			selected_unit.request_attack(clicked_unit)
 		else:
+			selected_unit.set_destination(world_pos)
+			
+	else:
+		if not clicked_unit:
 			var e = %"Build energy".value
 			if player.player_energy >= e:
 				player.player_energy -= e
 				player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
+			
+	
+	

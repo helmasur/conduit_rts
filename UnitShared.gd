@@ -4,7 +4,8 @@ class_name UnitShared
 enum ActionMode {
 	UNDER_CONSTRUCTION,
 	FREE,
-	CONDUIT
+	CONDUIT,
+	ATTACKING
 }
 
 enum ConduitMode {

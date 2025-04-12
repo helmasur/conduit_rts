@@ -256,6 +256,12 @@ preprocess = 5.0
 draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_y43xi")
 
+[node name="Line2D" type="Line2D" parent="Graphics"]
+points = PackedVector2Array(0, 0, 145, -74)
+width = 2.18
+default_color = Color(0, 0, 0, 1)
+antialiased = true
+
 [node name="Node2D" type="Node2D" parent="."]
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

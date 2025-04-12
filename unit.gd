@@ -133,6 +133,7 @@ func handle_state_machine(delta: float) -> void:
 				graphics.get_node("SpeedRing").visible = true
 				graphics.get_node("PowerRing").visible = true
 				graphics.get_node("ConduitArea").visible = true
+				graphics.get_node("Line2D").visible = false
 			if len(repair_queue) > 0:
 				conduit_mode = UnitShared.ConduitMode.BUILDING
 			else:
@@ -154,7 +155,15 @@ func handle_state_machine(delta: float) -> void:
 			pass
 		UnitShared.ActionMode.ATTACKING:
 			if unit_to_attack:
+				var dist = Utils.toroid_distance(global_position, unit_to_attack.global_position, get_parent().world_size)
+				var dir = Utils.toroid_direction(global_position, unit_to_attack.global_position, get_parent().world_size)
+				var v = dir
 				unit_to_attack.apply_damage(power * delta)
+				for graphics in graphics_array:
+					var l: Line2D = graphics.get_node("Line2D")
+					l.visible = true
+					l.points[1].x = v.x
+					l.points[1].y = v.y
 			else:
 				mode = UnitShared.ActionMode.FREE
 				
@@ -164,6 +173,7 @@ func handle_state_machine(delta: float) -> void:
 				graphics.get_node("SpeedRing").visible = true
 				graphics.get_node("PowerRing").visible = true
 				graphics.get_node("ConduitArea").visible = false
+				graphics.get_node("Line2D").visible = false
 			pass
 		_:
 			# ActionMode.FREE eller annat
@@ -209,11 +219,8 @@ func _on_area_2d_body_entered(unit: Node2D) -> void:
 			nearby_units.append(unit)
 			if unit.energy < energy_max:
 				repair_queue.append(unit)
-	print("Body enter ", nearby_units)
-	print("RQ: ", repair_queue)
 
 func _on_area_2d_body_exited(unit: Node2D) -> void:
-	print("Body exit")
 	if unit is Unit:
 		nearby_units.erase(unit)
 		repair_queue.erase(unit)

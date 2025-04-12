@@ -17,6 +17,7 @@ var highlight: bool = false
 var current_h: float = 0.34 # Current är de värden som handtaget pekar på
 var current_p: float = 0.33
 var current_s: float = 0.33
+var light_mode: bool = false
 
 # Hörn på triangeln (beräknas i _ready)
 var A: Vector2
@@ -28,15 +29,16 @@ func _ready() -> void:
 	_update_triangle_vertices()
 	# Startposition i mitten
 	circle_pos = (A + B + C) / 3.0
+	point_pos = (A + B + C) / 3.0
 	#set_mouse_filter(Control.MOUSE_FILTER_PASS)
 	set_process_input(true)
 
 func _update_triangle_vertices() -> void:
 	#var rect_size = get_rect().size
 	var rect_size = _get_minimum_size()
-	A = Vector2(0, 0)
-	B = Vector2(rect_size.x, 0)
-	C = Vector2(rect_size.x * 0.5, rect_size.y)
+	A = Vector2(0, rect_size.y)
+	B = Vector2(rect_size.x, rect_size.y)
+	C = Vector2(rect_size.x * 0.5, 0)
 
 func _get_minimum_size() -> Vector2:
 	var aspect_ratio = 0.866
@@ -70,9 +72,9 @@ func _move_circle(mouse_pos: Vector2) -> void:
 	circle_pos = clamped
 
 	var bary = _point_to_barycentric(clamped)
-	current_h = bary.x
-	current_s = bary.y
-	current_p = bary.z
+	current_s = bary.x #left
+	current_p = bary.y #right
+	current_h = bary.z #top
 
 	emit_signal("attribute_changed", current_h, current_s, current_p)
 	queue_redraw()
@@ -114,10 +116,16 @@ func _bary_to_point(u: float, v: float, w: float) -> Vector2:
 	return A * u + B * v + C * w
 
 func _draw_triangle_gradient() -> void:
-	draw_polygon(
-		PackedVector2Array([A, B, C]),
-		PackedColorArray([color_a, color_b, color_c])
-	)
+	if light_mode:
+		draw_polygon(
+			PackedVector2Array([A, B, C]),
+			PackedColorArray([color_a.lightened(0.5), color_b.lightened(0.5), color_c.lightened(0.5)])
+		)
+	else:
+		draw_polygon(
+			PackedVector2Array([A, B, C]),
+			PackedColorArray([color_a, color_b, color_c])
+		)
 
 func _draw_circle() -> void:
 	if highlight:
@@ -129,8 +137,8 @@ func _draw_point() -> void:
 
 func _draw() -> void:
 	_draw_triangle_gradient()
-	_draw_point()
 	_draw_circle()
+	_draw_point()
 
 # Gör att vi kan ändra färger i Inspector och se ändringen direkt
 func _set_color_a(value: Color) -> void:
@@ -151,17 +159,17 @@ func set_handle(h: float, p: float, s: float) -> void:
 		return  # Undvik division med noll
 
 	# Normalisera så att h + s + p = 1
-	var u = h / total
-	var v = s / total
-	var w = p / total
+	var u = s / total
+	var v = p / total
+	var w = h / total
 
 	# Flytta handtaget till rätt position i triangeln
 	circle_pos = _bary_to_point(u, v, w)
 
 	# Uppdatera interna värden
-	current_h = u
-	current_s = v
-	current_p = w
+	current_s = u
+	current_p = v
+	current_h = w
 
 	emit_signal("attribute_changed", current_h, current_p, current_s)
 	queue_redraw()
@@ -172,10 +180,13 @@ func set_point(h: float, p: float, s: float) -> void:
 		return  # Undvik division med noll
 	
 	# Normalisera så att h + s + p = 1
-	var u = h / total
-	var v = s / total
-	var w = p / total
+	var u = s / total
+	var v = p / total
+	var w = h / total
 	
 	point_pos = _bary_to_point(u, v, w)
+	queue_redraw()
 	
+func set_light_mode(a: bool):
+	light_mode = a
 	queue_redraw()

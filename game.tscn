@@ -120,22 +120,36 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -86.5
-offset_top = 82.5
-offset_right = 96.5
-offset_bottom = 105.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Energy_prog" type="ProgressBar" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/MarginContainer"]
+[node name="UnitStats" type="VBoxContainer" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control"]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -58.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Transform_button" type="Button" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "Transform"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="MarginContainer" type="MarginContainer" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+
+[node name="Energy_prog" type="ProgressBar" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats/HBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxFlat_7mycd")
@@ -144,112 +158,115 @@ max_value = 1.0
 value = 0.5
 show_percentage = false
 
-[node name="Energy" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/MarginContainer"]
+[node name="Energy" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats/HBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Unit Energy:"
 
-[node name="Power" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control"]
+[node name="Health" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-offset_left = 413.0
-offset_top = 94.0
-offset_right = 502.0
-offset_bottom = 117.0
 size_flags_horizontal = 3
-text = "Power"
-horizontal_alignment = 1
+size_flags_vertical = 8
+text = "Armour"
 
-[node name="Speed" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control"]
+[node name="Speed" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-offset_left = 342.0
-offset_top = 127.0
-offset_right = 525.0
-offset_bottom = 150.0
 size_flags_horizontal = 3
+size_flags_vertical = 8
 text = "Speed"
-horizontal_alignment = 1
 
-[node name="Health" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control"]
+[node name="Power" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-offset_left = 319.0
-offset_top = 155.0
-offset_right = 502.0
-offset_bottom = 178.0
 size_flags_horizontal = 3
-text = "Shield"
-horizontal_alignment = 1
-
-[node name="Transform_button" type="Button" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control"]
-unique_name_in_owner = true
-layout_mode = 2
-offset_left = 154.0
-offset_top = 130.0
-offset_right = 337.0
-offset_bottom = 161.0
-text = "Transform"
+size_flags_vertical = 8
+text = "Power"
 
 [node name="Control2" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 8
 mouse_filter = 1
 
 [node name="TriCon" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control2"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 150)
+custom_minimum_size = Vector2(150, 130)
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -80.0
-offset_top = -148.0
-offset_right = 70.0
-offset_bottom = 2.0
+offset_left = -75.0
+offset_top = -130.0
+offset_right = 75.0
 grow_horizontal = 2
 grow_vertical = 0
-scale = Vector2(1, -1)
 pivot_offset = Vector2(75, 75)
 mouse_filter = 1
 script = ExtResource("4_eow3j")
-color_a = Color(0.5, 0.25, 0.25, 1)
-color_b = Color(0.25, 0.5, 0.25, 1)
-color_c = Color(0.25, 0.25, 0.5, 1)
+color_a = Color(0.471731, 0.199841, 0.52646, 1)
+color_b = Color(0.215813, 0.272698, 0.592578, 1)
+color_c = Color(0.354488, 0.274574, 0, 1)
 metadata/_custom_type_script = "uid://chxk5r6puaa35"
 
 [node name="Polygon2D" type="Polygon2D" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control2/TriCon"]
 show_behind_parent = true
 color = Color(0.679435, 0.338055, 0.320599, 1)
-polygon = PackedVector2Array(0, 0, 150, 0, 75, 130)
-metadata/_edit_lock_ = true
+polygon = PackedVector2Array(0, 130, 150, 130, 75, 0)
 
 [node name="Control3" type="Control" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 
-[node name="Energy cost" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3"]
+[node name="BuildControls" type="VBoxContainer" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/BuildControls"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BuildEnergy" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/BuildControls/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-offset_left = 201.0
-offset_top = 170.0
-offset_right = 290.0
-offset_bottom = 193.0
-size_flags_horizontal = 8
+size_flags_horizontal = 3
 size_flags_vertical = 10
 text = "Energy cost"
 
-[node name="Build energy" type="HSlider" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3"]
+[node name="BuildArmour" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/BuildControls/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-offset_top = 191.0
-offset_right = 487.0
-offset_bottom = 207.0
+size_flags_horizontal = 3
 size_flags_vertical = 10
+text = "Armour"
+
+[node name="BuildSpeed" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/BuildControls/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 10
+text = "Speed"
+
+[node name="BuildPower" type="Label" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/BuildControls/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 10
+text = "Power"
+
+[node name="EnergySlider" type="HSlider" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/BuildControls"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
 min_value = 1.0
 max_value = 100000.0
 value = 1.0
@@ -258,6 +275,7 @@ rounded = true
 
 [node name="Conduit" type="Button" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 offset_left = 296.0
 offset_top = 126.0
@@ -276,6 +294,6 @@ spawn_path = NodePath("..")
 [node name="Menu" type="CanvasLayer" parent="."]
 visible = false
 
-[connection signal="pressed" from="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/Transform_button" to="GUI/HUD" method="_on_transform_button_pressed"]
-[connection signal="value_changed" from="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/Build energy" to="GUI/HUD" method="_on_build_energy_value_changed"]
+[connection signal="pressed" from="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control/UnitStats/Transform_button" to="GUI/HUD" method="_on_transform_button_pressed"]
+[connection signal="value_changed" from="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/BuildControls/EnergySlider" to="GUI/HUD" method="_on_build_energy_value_changed"]
 [connection signal="pressed" from="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3/Conduit" to="GUI/HUD" method="_on_conduit_pressed"]

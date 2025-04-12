@@ -101,7 +101,7 @@ func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 			
 	else:
 		if not clicked_unit:
-			var e = %"Build energy".value
+			var e = %"EnergySlider".value
 			if player.player_energy >= e:
 				player.player_energy -= e
 				player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION

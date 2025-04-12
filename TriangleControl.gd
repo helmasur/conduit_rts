@@ -138,7 +138,8 @@ func _draw_point() -> void:
 func _draw() -> void:
 	_draw_triangle_gradient()
 	_draw_circle()
-	_draw_point()
+	if light_mode:
+		_draw_point()
 
 # Gör att vi kan ändra färger i Inspector och se ändringen direkt
 func _set_color_a(value: Color) -> void:

@@ -43,6 +43,7 @@ var is_selected: bool = false
 var multimesh_instance_indices: Array = []
 var player_color = Color.YELLOW_GREEN
 var graphics_array: Array = []
+var physics_array: Array = []
 
 func _ready() -> void:
 	target_defense_prop = defense_prop
@@ -62,6 +63,16 @@ func _ready() -> void:
 		copy.position = offs
 		graphics_array.append(copy)
 		add_child(copy)
+		
+	for offs in Utils.get_toroid_copies(get_parent().world_size):
+		var copy = $CollisionShape2D.duplicate()
+		var copy1 = $Area2D.duplicate()
+		copy.position = offs
+		copy1.position = offs
+		physics_array.append(copy)
+		physics_array.append(copy1)
+		add_child(copy)
+		add_child(copy1)
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
@@ -181,12 +192,15 @@ func _update_attributes():
 
 func _on_area_2d_body_entered(unit: Node2D) -> void:
 	if unit is Unit and unit != self:
-		nearby_units.append(unit)
-		if unit.energy < energy_max:
-			repair_queue.append(unit)
-	else: return
+		if not unit in nearby_units:
+			nearby_units.append(unit)
+			if unit.energy < energy_max:
+				repair_queue.append(unit)
+	print("Body enter ", nearby_units)
+	print("RQ: ", repair_queue)
 
 func _on_area_2d_body_exited(unit: Node2D) -> void:
+	print("Body exit")
 	if unit is Unit:
 		nearby_units.erase(unit)
 		repair_queue.erase(unit)

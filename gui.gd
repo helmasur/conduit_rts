@@ -42,9 +42,9 @@ func _process(_delta: float) -> void:
 	
 
 func _on_transform_button_pressed() -> void:
-	print("Tricon: ", %TriCon.current_h, " ", %TriCon.current_p, " ", %TriCon.current_s)
-	print("Mode: ", selected_unit.mode)
-	print("Conduit Mode: ", selected_unit.conduit_mode)
+	#print("Tricon: ", %TriCon.current_h, " ", %TriCon.current_p, " ", %TriCon.current_s)
+	#print("Mode: ", selected_unit.mode)
+	#print("Conduit Mode: ", selected_unit.conduit_mode)
 	for unit: Unit in selected_units:
 		unit.old_defense_prop = unit.defense_prop
 		unit.old_power_prop = unit.power_prop

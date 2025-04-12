@@ -256,5 +256,7 @@ preprocess = 5.0
 draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_y43xi")
 
+[node name="Node2D" type="Node2D" parent="."]
+
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]

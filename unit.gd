@@ -97,12 +97,12 @@ func _physics_process(delta: float) -> void:
 		destination = Utils.wrap_position(destination)
 
 	UnitAttributes.update_proportions(self, delta)
-	for graphics in graphics_array:
-		graphics.get_child(2).amount_ratio = defense_prop
-		graphics.get_child(3).amount_ratio = speed_prop
-		graphics.get_child(4).amount_ratio = power_prop
+	for graphics: Node2D in graphics_array:
+		graphics.get_node("ShieldRing").amount_ratio = defense_prop
+		graphics.get_node("SpeedRing").amount_ratio = speed_prop
+		graphics.get_node("PowerRing").amount_ratio = power_prop
 
-	if self. is_in_group("selected") or mode == UnitShared.ActionMode.CONDUIT:
+	if self.is_in_group("selected") or mode == UnitShared.ActionMode.CONDUIT:
 		var units = get_tree().get_nodes_in_group("units")
 		fsf = Utils.calc_free_space_factor(global_position, get_parent().world_size, units)
 		
@@ -117,10 +117,10 @@ func handle_state_machine(delta: float) -> void:
 			if defense_prop < 0.99:
 				mode = UnitShared.ActionMode.FREE
 				for graphics in graphics_array:
-					graphics.get_child(0).visible = false
+					graphics.get_node("ConduitArea").visible = false
 				return
 			for graphics in graphics_array:
-				graphics.get_child(0).visible = true
+				graphics.get_node("ConduitArea").visible = true
 			if len(repair_queue) > 0:
 				conduit_mode = UnitShared.ConduitMode.BUILDING
 			else:
@@ -149,7 +149,11 @@ func set_selected(selected: bool) -> void:
 	is_selected = selected
 	if selected:
 		self.add_to_group("selected_units")
+		for graphics: Node2D in graphics_array:
+			graphics.get_node("Selected").visible = true
 	else:
+		for graphics: Node2D in graphics_array:
+			graphics.get_node("Selected").visible = false
 		self.remove_from_group("selected_units")
 
 func set_destination(pos: Vector2) -> void:

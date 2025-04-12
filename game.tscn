@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b4s3wenyg8wrs"]
+[gd_scene load_steps=14 format=3 uid="uid://b4s3wenyg8wrs"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://game.gd" id="1_fc0e3"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_7jktm"]
@@ -26,9 +26,20 @@ domain_warp_fractal_lacunarity = 1.0
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1bvp3"]
 width = 2048
 height = 2048
-seamless = true
 color_ramp = SubResource("Gradient_0xm2m")
 noise = SubResource("FastNoiseLite_h2yge")
+
+[sub_resource type="Gradient" id="Gradient_ryrav"]
+interpolation_mode = 2
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_eow3j"]
+gradient = SubResource("Gradient_ryrav")
+width = 32
+height = 32
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7mycd"]
 bg_color = Color(0, 0, 0, 1)
@@ -53,6 +64,9 @@ script = ExtResource("2_ryrav")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_7jktm")
+
+[node name="SpawnCursor" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_eow3j")
 
 [node name="GUI" type="CanvasLayer" parent="."]
 

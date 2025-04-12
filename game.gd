@@ -54,6 +54,9 @@ func _add_unit(unit: Unit):
 	
 func _remove_unit(unit: Unit):
 	units.erase(unit)
+	
+func _process(delta: float) -> void:
+	$SpawnCursor.global_position = $Camera2D.get_global_mouse_position()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
@@ -82,9 +85,11 @@ func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 			selected_unit.set_selected(false)
 		clicked_unit.set_selected(true)
 		selected_unit = clicked_unit
+		$SpawnCursor.visible = false
 		%TriCon.set_point(selected_unit.defense_prop, selected_unit.power_prop, selected_unit.speed_prop)
 	#%TriCon.set_handle(selected_unit.target_defense_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
 	else:
+		$SpawnCursor.visible = true
 		for unit in get_tree().get_nodes_in_group("selected_units"):
 			unit.set_selected(false)
 			selected_unit = null

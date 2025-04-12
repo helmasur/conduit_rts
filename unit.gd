@@ -127,10 +127,11 @@ func handle_state_machine(delta: float) -> void:
 		UnitShared.ActionMode.CONDUIT:
 			if defense_prop < 0.99:
 				mode = UnitShared.ActionMode.FREE
-				for graphics in graphics_array:
-					graphics.get_node("ConduitArea").visible = false
 				return
 			for graphics in graphics_array:
+				graphics.get_node("ShieldRing").visible = true
+				graphics.get_node("SpeedRing").visible = true
+				graphics.get_node("PowerRing").visible = true
 				graphics.get_node("ConduitArea").visible = true
 			if len(repair_queue) > 0:
 				conduit_mode = UnitShared.ConduitMode.BUILDING
@@ -145,6 +146,11 @@ func handle_state_machine(delta: float) -> void:
 					UnitBuild.handle_build_state(self, delta)
 			
 		UnitShared.ActionMode.UNDER_CONSTRUCTION:
+			for graphics in graphics_array:
+				graphics.get_node("ShieldRing").visible = false
+				graphics.get_node("SpeedRing").visible = false
+				graphics.get_node("PowerRing").visible = false
+				graphics.get_node("ConduitArea").visible = false
 			pass
 		UnitShared.ActionMode.ATTACKING:
 			if unit_to_attack:
@@ -152,6 +158,13 @@ func handle_state_machine(delta: float) -> void:
 			else:
 				mode = UnitShared.ActionMode.FREE
 				
+		UnitShared.ActionMode.FREE:
+			for graphics in graphics_array:
+				graphics.get_node("ShieldRing").visible = true
+				graphics.get_node("SpeedRing").visible = true
+				graphics.get_node("PowerRing").visible = true
+				graphics.get_node("ConduitArea").visible = false
+			pass
 		_:
 			# ActionMode.FREE eller annat
 			pass

@@ -61,6 +61,9 @@ func _remove_unit(unit: Unit):
 	
 func _process(_delta: float) -> void:
 	$SpawnCursor.global_position = $Camera2D.get_global_mouse_position()
+	if is_dragging:
+		var camera = $Camera2D
+		update_selection_rect(camera.get_global_mouse_position())
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
@@ -154,7 +157,6 @@ func update_selection_rect(current_position: Vector2) -> void:
 	var world_size = Vector2(2048, 2048)
 	var raw_diff = current_position - drag_start_position
 	var diff = raw_diff
-	# Applicera wrapping endast om differensen är mindre eller lika med halva världen
 	if abs(raw_diff.x) <= world_size.x / 2:
 		diff.x = Utils.toroid_direction(drag_start_position, current_position, world_size).x
 	if abs(raw_diff.y) <= world_size.y / 2:
@@ -165,7 +167,8 @@ func update_selection_rect(current_position: Vector2) -> void:
 	var bottom_right = Vector2(max(drag_start_position.x, computed_end.x), max(drag_start_position.y, computed_end.y))
 	var top_right = Vector2(bottom_right.x, top_left.y)
 	var bottom_left = Vector2(top_left.x, bottom_right.y)
-	$SelectionRect.points = [top_left, top_right, bottom_right, bottom_left, top_left]
+	$SelectionRect.points = [top_left, top_right, bottom_right, bottom_left]
+
 
 
 

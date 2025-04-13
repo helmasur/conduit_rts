@@ -95,20 +95,16 @@ func _unhandled_input(event: InputEvent) -> void:
 			$SelectionRect.visible = false
 			$SelectionRect.points = []  # Rensa tidigare rektangelpunkter
 
-
 	# Uppdatera rektangeln medan musen rör sig under dragläget
 	elif event is InputEventMouseMotion and is_dragging:
 		if drag_start_position.distance_to(mouse_pos) >= drag_threshold:
 			$SelectionRect.visible = true
 			update_selection_rect(mouse_pos)
 
-
-	# Hantera höger musknapp enligt din befintliga logik
 	elif event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_RIGHT and event.pressed:
 		var clicked_unit = Utils.get_unit_at_wrapped_position(mouse_pos, world_size)
 		var wrapped_pos = Utils.wrap_position(mouse_pos)
 		_handle_right_click(wrapped_pos, clicked_unit)
-
 
 func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 	if clicked_unit:
@@ -116,6 +112,7 @@ func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 			selected_unit.set_selected(false)
 		clicked_unit.set_selected(true)
 		selected_unit = clicked_unit
+		clicked_unit.add_to_group("selected_units")
 		$SpawnCursor.visible = false
 		%TriCon.set_point(selected_unit.defense_prop, selected_unit.power_prop, selected_unit.speed_prop)
 		#%TriCon.set_handle(selected_unit.target_defense_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
@@ -127,7 +124,7 @@ func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 		selected_unit = null
 
 func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
-	var world_size = Vector2(2048, 2048)
+	#var world_size = Vector2(2048, 2048)
 	var raw_diff = end_pos - start_pos
 	var diff = raw_diff
 	# Applicera wrapping endast om differensen är mindre eller lika med halva världen
@@ -149,12 +146,10 @@ func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 				selected = true
 				break
 		unit.set_selected(selected)
-
-
-
+		unit.add_to_group("selected_units")
 
 func update_selection_rect(current_position: Vector2) -> void:
-	var world_size = Vector2(2048, 2048)
+	#var world_size = Vector2(2048, 2048)
 	var raw_diff = current_position - drag_start_position
 	var diff = raw_diff
 	if abs(raw_diff.x) <= world_size.x / 2:
@@ -169,20 +164,17 @@ func update_selection_rect(current_position: Vector2) -> void:
 	var bottom_left = Vector2(top_left.x, bottom_right.y)
 	$SelectionRect.points = [top_left, top_right, bottom_right, bottom_left]
 
-
-
-
-
-
-
 func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 	#print(selected_unit)
 	# Be den valda enheten att förflytta sig
-	if selected_unit:
+	var selected_units = get_tree().get_nodes_in_group("selected_units")
+	if len(selected_units) > 0:
 		if clicked_unit:
-			selected_unit.request_attack(clicked_unit)
+			for unit: Unit in selected_units:
+				unit.request_attack(clicked_unit)
 		else:
-			selected_unit.set_destination(world_pos)
+			for unit: Unit in selected_units:
+				unit.set_destination(world_pos)
 			
 	else:
 		if not clicked_unit:

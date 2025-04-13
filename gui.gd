@@ -14,7 +14,7 @@ func _process(_delta: float) -> void:
 		%Player_energy.text = "Energy pool %.0f" % $"/root/Game".player.player_energy
 
 	
-	if selected_units_count == 1:
+	if selected_units_count > 0:
 		selected_unit = selected_units[0]
 		%Transform_button.disabled = false
 		%Conduit.disabled = false

@@ -11,9 +11,11 @@ var defense: float = 0
 var power: float = 0
 var speed: float = 0
 
-@export var speed_factor: float = 2
-@export var base_collect_rate: float = 5.0
-@export var build_transfer_rate: float = 5.0
+@export var base_collect_rate: float = 25.0
+@export var build_transfer_rate: float = 25.0
+@export var base_attack_factor: float = 1
+@export var base_defense_factor: float = 1
+@export var base_speed_factor: float = 1
 
 var transform_amount: float = 0.0
 var transform_current: float
@@ -203,14 +205,14 @@ func request_attack(unit: Unit):
 			unit_to_attack = unit
 
 func apply_damage(amount: float) -> void:
-	energy -= (amount / defense)
+	energy -= (base_attack_factor * amount / defense+1)
 	if energy <= 0:
 		queue_free()
 		
 func _update_attributes():
-	defense = defense_prop * energy_max
-	power = power_prop * energy_max
-	speed = speed_prop * energy_max
+	defense = defense_prop * energy_max * base_defense_factor
+	power = power_prop * energy_max * base_attack_factor
+	speed = speed_prop * energy_max * base_speed_factor
 
 func _on_area_2d_body_entered(unit: Node2D) -> void:
 	if unit is Unit and unit != self:

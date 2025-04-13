@@ -283,9 +283,9 @@ layout_mode = 2
 size_flags_vertical = 8
 min_value = 1.0
 max_value = 100000.0
+step = 0.1
 value = 1.0
 exp_edit = true
-rounded = true
 
 [node name="Conduit" type="Button" parent="GUI/HUD/MarginContainer/VBoxContainer/Row3/HBoxContainer/Control3"]
 unique_name_in_owner = true

@@ -257,6 +257,7 @@ draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_y43xi")
 
 [node name="Line2D" type="Line2D" parent="Graphics"]
+visible = false
 points = PackedVector2Array(0, 0, 145, -74)
 width = 2.18
 default_color = Color(0, 0, 0, 1)

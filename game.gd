@@ -146,7 +146,10 @@ func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 				selected = true
 				break
 		unit.set_selected(selected)
-		unit.add_to_group("selected_units")
+		if selected:
+			unit.add_to_group("selected_units")
+		else:
+			unit.remove_from_group("selected_units")
 
 func update_selection_rect(current_position: Vector2) -> void:
 	#var world_size = Vector2(2048, 2048)

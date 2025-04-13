@@ -205,7 +205,7 @@ func request_attack(unit: Unit):
 			unit_to_attack = unit
 
 func apply_damage(amount: float) -> void:
-	energy -= (base_attack_factor * amount / defense+1)
+	energy -= (amount / (defense+1))
 	if energy <= 0:
 		queue_free()
 		

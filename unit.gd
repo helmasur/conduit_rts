@@ -155,7 +155,6 @@ func handle_state_machine(delta: float) -> void:
 			pass
 		UnitShared.ActionMode.ATTACKING:
 			if unit_to_attack:
-				var dist = Utils.toroid_distance(global_position, unit_to_attack.global_position, get_parent().world_size)
 				var dir = Utils.toroid_direction(global_position, unit_to_attack.global_position, get_parent().world_size)
 				var v = dir
 				unit_to_attack.apply_damage(power * delta)

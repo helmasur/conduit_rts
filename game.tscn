@@ -68,6 +68,9 @@ script = ExtResource("2_7jktm")
 [node name="SpawnCursor" type="Sprite2D" parent="."]
 texture = SubResource("GradientTexture2D_eow3j")
 
+[node name="SelectionRect" type="Line2D" parent="."]
+closed = true
+
 [node name="GUI" type="CanvasLayer" parent="."]
 
 [node name="HUD" type="Control" parent="GUI"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://bxnd7hcypruou"]
+[gd_scene load_steps=30 format=3 uid="uid://bxnd7hcypruou"]
 
 [ext_resource type="Script" uid="uid://3lfq38iin0t7" path="res://unit.gd" id="1_ctwoc"]
 [ext_resource type="Texture2D" uid="uid://dny5cnj0cc8i6" path="res://ring_tex.tres" id="2_ctwoc"]
@@ -7,7 +7,7 @@
 radius = 25.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ctwoc"]
-radius = 300.0
+radius = 256.0
 
 [sub_resource type="Gradient" id="Gradient_5wnup"]
 offsets = PackedFloat32Array(0, 0.619469, 0.973451, 1)
@@ -185,10 +185,20 @@ scale_min = 0.3
 scale_max = 0.3
 alpha_curve = SubResource("CurveTexture_p81dm")
 
+[sub_resource type="Curve" id="Curve_davkp"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [node name="Unit" type="CharacterBody2D"]
 motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_ctwoc")
+base_collect_rate = 1.0
+base_transfer_rate = 1.0
+base_transform_rate = 10.0
+base_attack_factor = 10.0
+base_defense_factor = 10.0
+base_speed_factor = 75.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -202,8 +212,11 @@ shape = SubResource("CircleShape2D_ctwoc")
 
 [node name="Graphics" type="Node2D" parent="."]
 
+[node name="FSFCircle" type="Line2D" parent="Graphics"]
+closed = true
+width = 3.0
+
 [node name="ConduitArea" type="Sprite2D" parent="Graphics"]
-visible = false
 texture = SubResource("GradientTexture2D_1sk4h")
 
 [node name="EnergyParticles" type="GPUParticles2D" parent="Graphics/ConduitArea"]
@@ -256,11 +269,12 @@ preprocess = 5.0
 draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_y43xi")
 
-[node name="Line2D" type="Line2D" parent="Graphics"]
+[node name="Laser" type="Line2D" parent="Graphics"]
 visible = false
 points = PackedVector2Array(0, 0, 145, -74)
-width = 2.18
+width_curve = SubResource("Curve_davkp")
 default_color = Color(0, 0, 0, 1)
+begin_cap_mode = 2
 antialiased = true
 
 [node name="Node2D" type="Node2D" parent="."]

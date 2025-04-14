@@ -48,7 +48,7 @@ static func toroid_direction(from: Vector2, to: Vector2, world_size: Vector2) ->
 
 
 # Funktion för att räkna ut ett "free space factor" baserat på avståndet till andra enheter,
-# anpassat för en toroid värld (2048x2048).
+# anpassat för en toroid värld.
 static func calc_free_space_factor(pos: Vector2, world_size: Vector2, units: Array) -> float:
 	var dist_max = sqrt(2.0) * world_size.x / 2.0
 	var fsf = 1.0
@@ -57,9 +57,9 @@ static func calc_free_space_factor(pos: Vector2, world_size: Vector2, units: Arr
 	for unit in units:
 		if pos != unit.global_position:  # Hoppa över oss själva
 			var dist = toroid_distance(pos, unit.global_position, world_size)
-			fsf += 1 - (dist / dist_max)
+			fsf += pow(1 - (dist / dist_max), 3)
 	fsf = 1.0 / fsf
-	fsf = sin(fsf*PI/2.0)
+	#fsf = sin(fsf*PI/2.0)
 	return fsf
 
 static func get_toroid_offsets(world_size: Vector2) -> Array[Vector2]:

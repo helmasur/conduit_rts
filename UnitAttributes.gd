@@ -2,7 +2,7 @@
 class_name UnitAttributes
 
 static func update_proportions(unit: Unit, delta: float) -> void:
-	var rate = 200 * delta
+	var rate = delta * unit.base_transform_rate
 	if unit.transform_amount > 0.0:
 		unit.transform_current = move_toward(unit.transform_current, unit.transform_amount, rate / unit.energy)
 		var ratio = unit.transform_current / unit.transform_amount

@@ -26,7 +26,7 @@ func _ready() -> void:
 		var cam : Camera2D = $"../Camera2D"
 		cam.make_current()
 		#spawn_initial_unit()
-		spawn_unit(1000, .34, .3, .3, Vector2.ZERO).energy = 1000
+		spawn_unit(1, .34, .3, .3, Vector2.ZERO).energy = 1
 	else:
 		print("Authority was not here")
 	

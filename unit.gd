@@ -116,8 +116,8 @@ func _physics_process(delta: float) -> void:
 		graphics.get_node("SpeedRing").amount_ratio = speed_prop
 		graphics.get_node("PowerRing").amount_ratio = power_prop
 
-	if is_selected or true:
-		if get_tree().get_node_count_in_group("selected_units") == 1 or true:
+	if is_selected:
+		if get_tree().get_node_count_in_group("selected_units") == 1:
 			var units = get_tree().get_nodes_in_group("units")
 			fsf = Utils.calc_free_space_factor(global_position, get_parent().world_size, units)
 			_update_fsfcircle()

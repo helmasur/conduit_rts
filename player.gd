@@ -20,6 +20,8 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	print("Player: ready, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())
+	if int(name) == multiplayer.get_unique_id():
+		set_multiplayer_authority(multiplayer.get_unique_id())
 	if is_multiplayer_authority():
 		get_parent().player = self
 		print("Authority was here")

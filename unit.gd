@@ -58,6 +58,9 @@ func _ready() -> void:
 	_update_attributes()
 	destination = global_position
 	#$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
+	if is_multiplayer_authority():
+		add_to_group("player_units")
+	add_to_group("units")
 	
 	graphics_array.append($Graphics)
 	for offs in Utils.get_toroid_copies(get_parent().world_size):

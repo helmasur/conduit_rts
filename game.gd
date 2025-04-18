@@ -133,9 +133,7 @@ func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 	else:
 		if not clicked_unit:
 			var e = %"EnergySlider".value
-			if player.player_energy >= e:
-				player.player_energy -= e
-				player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
+			player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
 			
 func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 	#var world_size = Vector2(2048, 2048)

@@ -43,9 +43,7 @@ func spawn_unit(e: float, h: float, p: float, s: float, pos: Vector2) -> Unit:
 	new_unit.target_speed_prop = s
 	add_child(new_unit, true)
 	#get_parent()._add_unit(new_unit)
-	if new_unit.is_multiplayer_authority():
-		new_unit.add_to_group("player_units")
-	new_unit.add_to_group("units")
+
 	return new_unit
 
 @rpc("authority", "call_local", "reliable", 0)

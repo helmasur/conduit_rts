@@ -48,21 +48,21 @@ var player_color = Color.YELLOW_GREEN
 var graphics_array: Array = []
 var physics_array: Array = []
 
+func _enter_tree() -> void:
+	set_multiplayer_authority(get_parent().muid, true)
+
 func _ready() -> void:
 	target_defense_prop = defense_prop
 	target_speed_prop = speed_prop
 	target_power_prop = power_prop
 	_update_attributes()
-	
-	add_to_group("units")
 	destination = global_position
 	#$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
-	var renderer = get_tree().get_root().get_node("Game/UnitRenderer")
-	renderer.register_unit(self)
 	
 	graphics_array.append($Graphics)
 	for offs in Utils.get_toroid_copies(get_parent().world_size):
 		var copy = $Graphics.duplicate()
+		copy.set_multiplayer_authority(get_parent().muid)
 		copy.position = offs
 		graphics_array.append(copy)
 		add_child(copy)
@@ -72,6 +72,8 @@ func _ready() -> void:
 		var copy1 = $Area2D.duplicate()
 		copy.position = offs
 		copy1.position = offs
+		copy.set_multiplayer_authority(get_parent().muid)
+		copy1.set_multiplayer_authority(get_parent().muid)
 		physics_array.append(copy)
 		physics_array.append(copy1)
 		add_child(copy)

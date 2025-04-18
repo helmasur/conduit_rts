@@ -1,8 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://b4s3wenyg8wrs"]
+[gd_scene load_steps=13 format=3 uid="uid://b4s3wenyg8wrs"]
 
 [ext_resource type="Script" uid="uid://bpcluqkphkhrp" path="res://game.gd" id="1_fc0e3"]
 [ext_resource type="Script" uid="uid://c4vf68rbxq658" path="res://camera_2d.gd" id="2_7jktm"]
-[ext_resource type="Script" uid="uid://q8q8sbielo7j" path="res://unit_renderer.gd" id="2_ryrav"]
 [ext_resource type="Script" uid="uid://bcp3gus4vjqtc" path="res://gui.gd" id="3_ryrav"]
 [ext_resource type="Script" uid="uid://chxk5r6puaa35" path="res://TriangleControl.gd" id="4_eow3j"]
 [ext_resource type="PackedScene" uid="uid://dcjg31qkj8607" path="res://main_menu.tscn" id="5_7jktm"]
@@ -54,13 +53,6 @@ script = ExtResource("1_fc0e3")
 show_behind_parent = true
 position = Vector2(1024, 1024)
 texture = SubResource("NoiseTexture2D_1bvp3")
-
-[node name="UnitRenderer" type="Node2D" parent="."]
-visible = false
-z_index = 2
-script = ExtResource("2_ryrav")
-
-[node name="MultiMeshInstance2D" type="MultiMeshInstance2D" parent="UnitRenderer"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_7jktm")

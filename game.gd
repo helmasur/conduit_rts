@@ -6,7 +6,7 @@ var selected_unit: Unit = null
 var tricon_h: float = .33
 var player_scene: PackedScene = preload("res://player.tscn")
 var player: Player
-var units = [Unit]
+#var units = [Unit]
 
 var drag_start_position: Vector2
 var is_dragging: bool = false
@@ -49,15 +49,14 @@ func _add_player(peer_id: int):
 	print("Game: add player id, ", peer_id)
 	var new_player = player_scene.instantiate()
 	new_player.name = str(peer_id)
-	new_player.id = peer_id
 	new_player.set_multiplayer_authority(peer_id) # Måste göras innan add_child()
 	add_child(new_player)
 	
-func _add_unit(unit: Unit):
-	units.append(unit)
-	
-func _remove_unit(unit: Unit):
-	units.erase(unit)
+#func _add_unit(unit: Unit):
+	#units.append(unit)
+	#
+#func _remove_unit(unit: Unit):
+	#units.erase(unit)
 	
 func _process(_delta: float) -> void:
 	$SpawnCursor.global_position = $Camera2D.get_global_mouse_position()
@@ -66,11 +65,7 @@ func _process(_delta: float) -> void:
 		update_selection_rect(camera.get_global_mouse_position())
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not is_multiplayer_authority():
-		return
-
 	var camera = $Camera2D
-	# Få musens globala position
 	var mouse_pos = camera.get_global_mouse_position()
 	
 	# Kontrollera om någon UI-komponent ligger under musen (och om den i så fall är en TriangleControl)
@@ -108,14 +103,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 	if clicked_unit:
-		if selected_unit:
-			selected_unit.set_selected(false)
-		clicked_unit.set_selected(true)
-		selected_unit = clicked_unit
-		clicked_unit.add_to_group("selected_units")
-		$SpawnCursor.visible = false
-		%TriCon.set_point(selected_unit.defense_prop, selected_unit.power_prop, selected_unit.speed_prop)
-		#%TriCon.set_handle(selected_unit.target_defense_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
+		if clicked_unit.is_in_group("player_units"):
+			if selected_unit:
+				selected_unit.set_selected(false)
+			clicked_unit.set_selected(true)
+			selected_unit = clicked_unit
+			clicked_unit.add_to_group("selected_units")
+			$SpawnCursor.visible = false
+			%TriCon.set_point(selected_unit.defense_prop, selected_unit.power_prop, selected_unit.speed_prop)
+			#%TriCon.set_handle(selected_unit.target_defense_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
 	else:
 		$SpawnCursor.visible = true
 		# Om inget enhet klickades: rensa markering
@@ -123,6 +119,24 @@ func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 			unit.set_selected(false)
 		selected_unit = null
 
+func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
+	#print(selected_unit)
+	# Be den valda enheten att förflytta sig
+	var selected_units = get_tree().get_nodes_in_group("selected_units")
+	if len(selected_units) > 0:
+		if clicked_unit:
+			for unit: Unit in selected_units:
+				unit.request_attack(clicked_unit)
+		else:
+			for unit: Unit in selected_units:
+				unit.set_destination(world_pos)
+	else:
+		if not clicked_unit:
+			var e = %"EnergySlider".value
+			if player.player_energy >= e:
+				player.player_energy -= e
+				player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
+			
 func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 	#var world_size = Vector2(2048, 2048)
 	var raw_diff = end_pos - start_pos
@@ -138,7 +152,7 @@ func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 	var bottom_right = Vector2(max(start_pos.x, computed_end.x), max(start_pos.y, computed_end.y))
 	var selection_rect = Rect2(top_left, bottom_right - top_left)
 	
-	for unit in get_tree().get_nodes_in_group("units"):
+	for unit in get_tree().get_nodes_in_group("player_units"):
 		var unit_pos = unit.global_position
 		var selected = false
 		for offset in Utils.get_toroid_offsets(world_size):
@@ -166,25 +180,3 @@ func update_selection_rect(current_position: Vector2) -> void:
 	var top_right = Vector2(bottom_right.x, top_left.y)
 	var bottom_left = Vector2(top_left.x, bottom_right.y)
 	$SelectionRect.points = [top_left, top_right, bottom_right, bottom_left]
-
-func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
-	#print(selected_unit)
-	# Be den valda enheten att förflytta sig
-	var selected_units = get_tree().get_nodes_in_group("selected_units")
-	if len(selected_units) > 0:
-		if clicked_unit:
-			for unit: Unit in selected_units:
-				unit.request_attack(clicked_unit)
-		else:
-			for unit: Unit in selected_units:
-				unit.set_destination(world_pos)
-			
-	else:
-		if not clicked_unit:
-			var e = %"EnergySlider".value
-			if player.player_energy >= e:
-				player.player_energy -= e
-				player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
-			
-	
-	

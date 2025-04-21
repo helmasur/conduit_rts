@@ -4,12 +4,14 @@ class_name Unit
 
 var unit_scene = preload("res://unit.tscn")
 var player : Player
+@export var unit_id: int = -1
 
-var energy_max: float = 1
-var energy: float = 1
-var defense: float = 0
-var power: float = 0
-var speed: float = 0
+
+@export var energy_max: float = 1
+@export var energy: float = 1
+@export var defense: float = 0
+@export var power: float = 0
+@export var speed: float = 0
 
 @export var base_collect_rate: float = 25.0
 @export var base_transfer_rate: float = 25.0
@@ -40,32 +42,33 @@ var repair_queue: Array = []
 #var unit_to_build: Unit = null
 var unit_to_attack: Unit = null
 
-var mode: int = UnitShared.ActionMode.FREE
+@export var mode: int = UnitShared.ActionMode.FREE
 var conduit_mode: int = UnitShared.ConduitMode.COLLECTING
-var is_selected: bool = false
+@export var is_selected: bool = false
 var multimesh_instance_indices: Array = []
 var player_color = Color.YELLOW_GREEN
 var graphics_array: Array = []
 var physics_array: Array = []
 
-func _enter_tree() -> void:
-	set_multiplayer_authority(get_parent().muid, true)
+#func _enter_tree() -> void:
+	#set_multiplayer_authority(get_parent().muid, true)
 
 func _ready() -> void:
+	name = str(unit_id)
 	target_defense_prop = defense_prop
 	target_speed_prop = speed_prop
 	target_power_prop = power_prop
 	_update_attributes()
 	destination = global_position
 	#$Area2D.connect("body_entered", Callable(self, "_on_proximity_entered"))
-	if is_multiplayer_authority():
-		add_to_group("player_units")
+	#if is_multiplayer_authority():
+		#add_to_group("player_units")
 	add_to_group("units")
 	
 	graphics_array.append($Graphics)
 	for offs in Utils.get_toroid_copies(get_parent().world_size):
 		var copy = $Graphics.duplicate()
-		copy.set_multiplayer_authority(get_parent().muid)
+		#copy.set_multiplayer_authority(get_parent().muid)
 		copy.position = offs
 		graphics_array.append(copy)
 		add_child(copy)
@@ -75,8 +78,8 @@ func _ready() -> void:
 		var copy1 = $Area2D.duplicate()
 		copy.position = offs
 		copy1.position = offs
-		copy.set_multiplayer_authority(get_parent().muid)
-		copy1.set_multiplayer_authority(get_parent().muid)
+		#copy.set_multiplayer_authority(get_parent().muid)
+		#copy1.set_multiplayer_authority(get_parent().muid)
 		physics_array.append(copy)
 		physics_array.append(copy1)
 		add_child(copy)

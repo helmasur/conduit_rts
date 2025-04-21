@@ -1,8 +1,14 @@
 extends Node2D
 class_name Player
 
-var player_energy: float = 10000.0
-var player_id := 0
+@export var player_energy: float = 10000.0
+@export var player_id := 0
+@export var selected_units: Array = []:
+	set(ids):
+		selected_units = ids
+		# Uppdatera alla lokala unit-noder så att korrekt flagga sätts
+		for u in get_tree().get_nodes_in_group("units"):
+			u.set_selected(u.unit_id in selected_units)
 
 @export var player_color: Color = Color.DEEP_PINK
 var world_size: Vector2
@@ -47,10 +53,19 @@ func spawn_unit(e: float, h: float, p: float, s: float, pos: Vector2) -> Unit:
 	new_unit.target_defense_prop = h
 	new_unit.target_power_prop = p
 	new_unit.target_speed_prop = s
+	new_unit.unit_id = get_parent().next_unit_id
+	get_parent().next_unit_id += 1
 	add_child(new_unit, true)
 	#get_parent()._add_unit(new_unit)
 
 	return new_unit
+	
+func _set_selected_units(ids: Array[int]) -> void:
+	selected_units = ids
+	# highlight: slå av/på .set_selected() på alla units
+	for u in get_tree().get_nodes_in_group("units"):
+		u.set_selected(u.unit_id in selected_units)
+
 
 @rpc("authority", "call_local", "reliable", 0)
 func set_player_energy(value: float) -> void:

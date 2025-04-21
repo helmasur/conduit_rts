@@ -6,6 +6,7 @@ var selected_unit: Unit = null
 var tricon_h: float = .33
 var player_scene: PackedScene = preload("res://player.tscn")
 var player: Player
+var next_unit_id := 0
 #var units = [Unit]
 
 var drag_start_position: Vector2
@@ -102,22 +103,31 @@ func _unhandled_input(event: InputEvent) -> void:
 		_handle_right_click(wrapped_pos, clicked_unit)
 
 func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
-	if clicked_unit:
-		if clicked_unit.is_in_group("player_units"):
-			if selected_unit:
-				selected_unit.set_selected(false)
-			clicked_unit.set_selected(true)
-			selected_unit = clicked_unit
-			clicked_unit.add_to_group("selected_units")
-			$SpawnCursor.visible = false
-			%TriCon.set_point(selected_unit.defense_prop, selected_unit.power_prop, selected_unit.speed_prop)
-			#%TriCon.set_handle(selected_unit.target_defense_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
+	var id = clicked_unit.unit_id if clicked_unit else -1
+	if multiplayer.is_server():
+		request_select_unit(id)
 	else:
-		$SpawnCursor.visible = true
-		# Om inget enhet klickades: rensa markering
-		for unit in get_tree().get_nodes_in_group("selected_units"):
-			unit.set_selected(false)
-		selected_unit = null
+		rpc_id(1, "request_select_unit", id)
+
+
+
+#func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
+	#if clicked_unit:
+		#if clicked_unit.is_in_group("player_units"):
+			#if selected_unit:
+				#selected_unit.set_selected(false)
+			#clicked_unit.set_selected(true)
+			#selected_unit = clicked_unit
+			#clicked_unit.add_to_group("selected_units")
+			#$SpawnCursor.visible = false
+			#%TriCon.set_point(selected_unit.defense_prop, selected_unit.power_prop, selected_unit.speed_prop)
+			##%TriCon.set_handle(selected_unit.target_defense_prop, selected_unit.target_power_prop, selected_unit.target_speed_prop)
+	#else:
+		#$SpawnCursor.visible = true
+		## Om inget enhet klickades: rensa markering
+		#for unit in get_tree().get_nodes_in_group("selected_units"):
+			#unit.set_selected(false)
+		#selected_unit = null
 
 func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 	#print(selected_unit)
@@ -135,33 +145,82 @@ func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 			var e = %"EnergySlider".value
 			player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
 			
+#func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
+	##var world_size = Vector2(2048, 2048)
+	#var raw_diff = end_pos - start_pos
+	#var diff = raw_diff
+	## Applicera wrapping endast om differensen är mindre eller lika med halva världen
+	#if abs(raw_diff.x) <= world_size.x / 2:
+		#diff.x = Utils.toroid_direction(start_pos, end_pos, world_size).x
+	#if abs(raw_diff.y) <= world_size.y / 2:
+		#diff.y = Utils.toroid_direction(start_pos, end_pos, world_size).y
+	#var computed_end = start_pos + diff
+	#
+	#var top_left = Vector2(min(start_pos.x, computed_end.x), min(start_pos.y, computed_end.y))
+	#var bottom_right = Vector2(max(start_pos.x, computed_end.x), max(start_pos.y, computed_end.y))
+	#var selection_rect = Rect2(top_left, bottom_right - top_left)
+	#
+	#for unit in get_tree().get_nodes_in_group("player_units"):
+		#var unit_pos = unit.global_position
+		#var selected = false
+		#for offset in Utils.get_toroid_offsets(world_size):
+			#if selection_rect.has_point(unit_pos + offset):
+				#selected = true
+				#break
+		#unit.set_selected(selected)
+		#if selected:
+			#unit.add_to_group("selected_units")
+		#else:
+			#unit.remove_from_group("selected_units")
+			
 func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
-	#var world_size = Vector2(2048, 2048)
 	var raw_diff = end_pos - start_pos
 	var diff = raw_diff
-	# Applicera wrapping endast om differensen är mindre eller lika med halva världen
 	if abs(raw_diff.x) <= world_size.x / 2:
 		diff.x = Utils.toroid_direction(start_pos, end_pos, world_size).x
 	if abs(raw_diff.y) <= world_size.y / 2:
 		diff.y = Utils.toroid_direction(start_pos, end_pos, world_size).y
 	var computed_end = start_pos + diff
-	
+
 	var top_left = Vector2(min(start_pos.x, computed_end.x), min(start_pos.y, computed_end.y))
 	var bottom_right = Vector2(max(start_pos.x, computed_end.x), max(start_pos.y, computed_end.y))
 	var selection_rect = Rect2(top_left, bottom_right - top_left)
-	
+
+	var ids: Array = []
 	for unit in get_tree().get_nodes_in_group("player_units"):
-		var unit_pos = unit.global_position
-		var selected = false
 		for offset in Utils.get_toroid_offsets(world_size):
-			if selection_rect.has_point(unit_pos + offset):
-				selected = true
+			if selection_rect.has_point(unit.global_position + offset):
+				ids.append(unit.unit_id)
 				break
-		unit.set_selected(selected)
-		if selected:
-			unit.add_to_group("selected_units")
-		else:
-			unit.remove_from_group("selected_units")
+
+	if multiplayer.is_server():
+		request_drag_select(ids)
+	else:
+		rpc_id(1, "request_drag_select", ids)
+
+@rpc("any_peer", "call_local", "reliable", 0)
+func request_select_unit(unit_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		sender_id = multiplayer.get_unique_id()
+	var pl = get_node_or_null(str(sender_id)) as Player
+	if pl:
+		pl.selected_units = [unit_id] if unit_id >= 0 else []
+
+@rpc("any_peer", "call_local", "reliable", 0)
+func request_drag_select(unit_ids: Array) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		sender_id = multiplayer.get_unique_id()
+	var pl = get_node_or_null(str(sender_id)) as Player
+	if pl:
+		pl.selected_units = unit_ids
+
+
 
 func update_selection_rect(current_position: Vector2) -> void:
 	#var world_size = Vector2(2048, 2048)

@@ -49,7 +49,7 @@ func _add_player(peer_id: int):
 	print("Game: add player id, ", peer_id)
 	var new_player = player_scene.instantiate()
 	new_player.name = str(peer_id)
-	new_player.set_multiplayer_authority(peer_id) # Måste göras innan add_child()
+	#new_player.set_multiplayer_authority(peer_id) # Måste göras innan add_child()
 	add_child(new_player)
 	
 #func _add_unit(unit: Unit):

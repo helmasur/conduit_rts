@@ -55,6 +55,7 @@ var physics_array: Array = []
 
 func _ready() -> void:
 	name = str(unit_id)
+	get_parent().player_units.append(unit_id)
 	target_defense_prop = defense_prop
 	target_speed_prop = speed_prop
 	target_power_prop = power_prop
@@ -234,12 +235,13 @@ func set_selected(selected: bool) -> void:
 		self.remove_from_group("selected_units")
 
 func set_destination(pos: Vector2) -> void:
+	if not is_multiplayer_authority():
+		return
 	if mode == UnitShared.ActionMode.FREE or mode == UnitShared.ActionMode.ATTACKING:
 		mode = UnitShared.ActionMode.FREE
 		destination = pos
 		unit_to_attack = null
 	
-
 func request_attack(unit: Unit):
 	if mode == UnitShared.ActionMode.FREE or mode == UnitShared.ActionMode.ATTACKING:
 		if Utils.toroid_distance(global_position, unit.global_position, get_parent().world_size) <= attack_range:

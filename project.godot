@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 MultiplayerManager="*res://MultiplayerManager.gd"
 
+[display]
+
+window/size/viewport_width=640
+window/size/viewport_height=480
+
 [editor]
 
 version_control/plugin_name="GitPlugin"

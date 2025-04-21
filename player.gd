@@ -9,6 +9,7 @@ class_name Player
 		# Uppdatera alla lokala unit-noder så att korrekt flagga sätts
 		for u in get_tree().get_nodes_in_group("units"):
 			u.set_selected(u.unit_id in selected_units)
+@export var player_units: Array[int] = []
 
 @export var player_color: Color = Color.DEEP_PINK
 var world_size: Vector2
@@ -25,7 +26,8 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	print("Player: ready, peer_id = ", multiplayer.get_unique_id(), " authority = ", get_multiplayer_authority())
 	player_id = int(name)
-	#if int(name) == multiplayer.get_unique_id():
+	if player_id == multiplayer.get_unique_id():
+		get_parent().player = self
 		#set_multiplayer_authority(multiplayer.get_unique_id())
 		
 	#if is_multiplayer_authority():
@@ -54,6 +56,7 @@ func spawn_unit(e: float, h: float, p: float, s: float, pos: Vector2) -> Unit:
 	new_unit.target_power_prop = p
 	new_unit.target_speed_prop = s
 	new_unit.unit_id = get_parent().next_unit_id
+	new_unit.player = self
 	get_parent().next_unit_id += 1
 	add_child(new_unit, true)
 	#get_parent()._add_unit(new_unit)

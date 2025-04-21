@@ -129,22 +129,91 @@ func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
 			#unit.set_selected(false)
 		#selected_unit = null
 
+#func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
+	##print(selected_unit)
+	## Be den valda enheten att förflytta sig
+	#var selected_units = get_tree().get_nodes_in_group("selected_units")
+	#if len(selected_units) > 0:
+		#if clicked_unit:
+			#for unit: Unit in selected_units:
+				#unit.request_attack(clicked_unit)
+		#else:
+			#for unit: Unit in selected_units:
+				#unit.set_destination(world_pos)
+	#else:
+		#if not clicked_unit:
+			#var e = %"EnergySlider".value
+			#player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
+			#
 func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
-	#print(selected_unit)
-	# Be den valda enheten att förflytta sig
-	var selected_units = get_tree().get_nodes_in_group("selected_units")
-	if len(selected_units) > 0:
-		if clicked_unit:
-			for unit: Unit in selected_units:
-				unit.request_attack(clicked_unit)
-		else:
-			for unit: Unit in selected_units:
-				unit.set_destination(world_pos)
+	var selected = get_tree().get_nodes_in_group("selected_units")
+	if selected.size() > 0:
+		for unit in selected:
+			# attack
+			if clicked_unit:
+				if multiplayer.is_server():
+					unit.request_attack(clicked_unit)
+				else:
+					rpc_id(1, "request_attack_unit", unit.unit_id, clicked_unit.unit_id)
+			# move
+			else:
+				if multiplayer.is_server():
+					unit.set_destination(world_pos)
+				else:
+					rpc_id(1, "request_move_unit", unit.unit_id, world_pos)
 	else:
 		if not clicked_unit:
-			var e = %"EnergySlider".value
-			player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos).mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
-			
+			var e = $"EnergySlider".value
+			if multiplayer.is_server():
+				var u = player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos)
+				u.mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
+			else:
+				rpc_id(1, "request_spawn_unit", e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos)
+
+@rpc("any_peer", "call_remote", "reliable", 0)
+func request_move_unit(unit_id: int, dest: Vector2) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		sender_id = multiplayer.get_unique_id()
+	var u = find_unit_by_id(unit_id)
+	if u and u.player.player_id == sender_id:
+		u.set_destination(dest)
+
+
+@rpc("any_peer", "call_remote", "reliable", 0)
+func request_attack_unit(attacker_id: int, target_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		sender_id = multiplayer.get_unique_id()
+	var atk = find_unit_by_id(attacker_id)
+	var tgt = find_unit_by_id(target_id)
+	if atk and tgt and atk.player.player_id == sender_id:
+		atk.request_attack(tgt)
+
+
+@rpc("any_peer", "call_remote", "reliable", 0)
+func request_spawn_unit(e: float, h: float, p: float, s: float, pos: Vector2) -> void:
+	if not multiplayer.is_server():
+		return
+	var u = player.spawn_unit(e, h, p, s, pos)
+	u.mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
+
+func _server_move_unit(unit_id: int, dest: Vector2) -> void:
+	var u = find_unit_by_id(unit_id)
+	if u and u.is_multiplayer_authority():
+		u.set_destination(dest)
+		
+func find_unit_by_id(id: int) -> Unit:
+	for u in get_tree().get_nodes_in_group("units"):
+		if u.unit_id == id:
+			return u
+	return null
+
+
 #func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 	##var world_size = Vector2(2048, 2048)
 	#var raw_diff = end_pos - start_pos
@@ -186,19 +255,22 @@ func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 	var bottom_right = Vector2(max(start_pos.x, computed_end.x), max(start_pos.y, computed_end.y))
 	var selection_rect = Rect2(top_left, bottom_right - top_left)
 
-	var ids: Array = []
-	for unit in get_tree().get_nodes_in_group("player_units"):
+	var ids: Array[int] = []
+	for uid in player.player_units:
+		var unit = player.get_node_or_null(str(uid)) as Unit
+		if not unit: continue
 		for offset in Utils.get_toroid_offsets(world_size):
 			if selection_rect.has_point(unit.global_position + offset):
 				ids.append(unit.unit_id)
 				break
 
 	if multiplayer.is_server():
-		request_drag_select(ids)
+		if len(ids) > 0:
+			request_drag_select(ids)
 	else:
 		rpc_id(1, "request_drag_select", ids)
-
-@rpc("any_peer", "call_local", "reliable", 0)
+		
+@rpc("any_peer", "call_remote", "reliable", 0)
 func request_select_unit(unit_id: int) -> void:
 	if not multiplayer.is_server():
 		return
@@ -206,19 +278,37 @@ func request_select_unit(unit_id: int) -> void:
 	if sender_id == 0:
 		sender_id = multiplayer.get_unique_id()
 	var pl = get_node_or_null(str(sender_id)) as Player
-	if pl:
-		pl.selected_units = [unit_id] if unit_id >= 0 else []
+	if not pl:
+		return
+	if unit_id >= 0:
+		var u = find_unit_by_id(unit_id)
+		if u and u.player.player_id == sender_id:
+			pl.selected_units = [unit_id]
+		else:
+			pl.selected_units = []
+	else:
+		pl.selected_units = []
 
-@rpc("any_peer", "call_local", "reliable", 0)
-func request_drag_select(unit_ids: Array) -> void:
+
+
+@rpc("any_peer", "call_remote", "reliable", 0)
+func request_drag_select(unit_ids: Array[int]) -> void:
 	if not multiplayer.is_server():
 		return
 	var sender_id = multiplayer.get_remote_sender_id()
 	if sender_id == 0:
 		sender_id = multiplayer.get_unique_id()
 	var pl = get_node_or_null(str(sender_id)) as Player
-	if pl:
-		pl.selected_units = unit_ids
+	if not pl:
+		return
+	var valid_ids: Array[int] = []
+	for id in unit_ids:
+		var u = find_unit_by_id(id)
+		if u and u.player.player_id == sender_id:
+			valid_ids.append(id)
+	pl.selected_units = valid_ids
+
+
 
 
 

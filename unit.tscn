@@ -19,6 +19,12 @@ properties/3/replication_mode = 2
 properties/4/path = NodePath(".:speed_prop")
 properties/4/spawn = true
 properties/4/replication_mode = 2
+properties/5/path = NodePath(".:energy_max")
+properties/5/spawn = true
+properties/5/replication_mode = 2
+properties/6/path = NodePath(".:energy")
+properties/6/spawn = true
+properties/6/replication_mode = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_btf8p"]
 radius = 25.0

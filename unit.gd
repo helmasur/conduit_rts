@@ -87,9 +87,9 @@ func _ready() -> void:
 		add_child(copy1)
 
 func _physics_process(delta: float) -> void:
+	_update_attributes()
 	if not is_multiplayer_authority(): return
 	handle_state_machine(delta)
-	_update_attributes()
 	if speed_prop < 0.01: destination = global_position
 	if mode == UnitShared.ActionMode.FREE:
 		if defense_prop > 0.99:

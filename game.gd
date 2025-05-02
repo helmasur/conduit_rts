@@ -191,7 +191,7 @@ func request_move_unit(unit_id: int, dest: Vector2) -> void:
 func transform_selected(target_defense, target_power, target_speed) -> void:
 	rpc_id(1, "request_transform", target_defense, target_power, target_speed)
 
-@rpc("any_peer", "call_remote", "reliable", 0)
+@rpc("any_peer", "call_local", "reliable", 0)
 func request_transform(target_defense, target_power, target_speed) -> void:
 	if not multiplayer.is_server():
 		return

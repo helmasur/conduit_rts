@@ -26,9 +26,9 @@ var transform_amount: float = 0.0
 var transform_current: float
 var fsf: float
 
-var defense_prop: float = 0.5
-var power_prop: float = 0.2
-var speed_prop: float = 0.3
+@export var defense_prop: float = 0.5
+@export var power_prop: float = 0.2
+@export var speed_prop: float = 0.3
 var target_defense_prop: float
 var target_power_prop: float
 var target_speed_prop: float
@@ -44,7 +44,7 @@ var unit_to_attack: Unit = null
 
 @export var mode: int = UnitShared.ActionMode.FREE
 var conduit_mode: int = UnitShared.ConduitMode.COLLECTING
-@export var is_selected: bool = false
+var is_selected: bool = false
 var multimesh_instance_indices: Array = []
 var player_color = Color.YELLOW_GREEN
 var graphics_array: Array = []
@@ -224,6 +224,8 @@ func handle_state_machine(delta: float) -> void:
 			pass
 
 func set_selected(selected: bool) -> void:
+	if get_parent().player_id != multiplayer.get_unique_id():
+		return
 	is_selected = selected
 	if selected:
 		self.add_to_group("selected_units")
@@ -254,9 +256,13 @@ func apply_damage(amount: float) -> void:
 		queue_free()
 		
 func _update_attributes():
-	defense = defense_prop * energy_max
-	power = power_prop * energy_max
-	speed = speed_prop * energy_max
+	var e
+	if mode == UnitShared.ActionMode.UNDER_CONSTRUCTION:
+		e = energy
+	else: e = energy_max
+	defense = defense_prop * e
+	power = power_prop * e
+	speed = speed_prop * e
 	
 func _update_fsfcircle():
 	var np = 64

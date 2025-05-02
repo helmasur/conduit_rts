@@ -3,24 +3,25 @@ class_name Player
 
 @export var player_energy: float = 10000.0
 @export var player_id := 0
-@export var selected_units: Array = []:
-	set(ids):
-		selected_units = ids
-		# Uppdatera alla lokala unit-noder så att korrekt flagga sätts
-		for u in get_tree().get_nodes_in_group("units"):
-			u.set_selected(u.unit_id in selected_units)
 @export var player_units: Array[int] = []
+@export var selected_units: Array[int] = []:
+	set(value):
+		selected_units = value            # OK, loopar inte rekursivt
+		for uid in player_units:          # rör bara våra egna units
+			var u := get_node_or_null(str(uid)) as Unit
+			if u:
+				u.set_selected(uid in selected_units)
 
 @export var player_color: Color = Color.DEEP_PINK
 var world_size: Vector2
 var unit_scene = preload("res://unit.tscn")
 @onready var unit_spawner = $UnitSpawner
 
-var muid: int
+#var muid: int # multiplayer user id
 
 func _enter_tree() -> void:
 	world_size = get_parent().world_size
-	muid = int(name)
+	#muid = int(name)
 	pass
 
 func _ready() -> void:
@@ -63,11 +64,11 @@ func spawn_unit(e: float, h: float, p: float, s: float, pos: Vector2) -> Unit:
 
 	return new_unit
 	
-func _set_selected_units(ids: Array[int]) -> void:
-	selected_units = ids
-	# highlight: slå av/på .set_selected() på alla units
-	for u in get_tree().get_nodes_in_group("units"):
-		u.set_selected(u.unit_id in selected_units)
+#func _set_selected_units(ids: Array[int]) -> void:
+	#selected_units = ids
+	## highlight: slå av/på .set_selected() på alla units
+	#for u in get_tree().get_nodes_in_group("units"):
+		#u.set_selected(u.unit_id in selected_units)
 
 
 @rpc("authority", "call_local", "reliable", 0)

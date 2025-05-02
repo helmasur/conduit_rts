@@ -12,22 +12,31 @@ static func update_proportions(unit: Unit, delta: float) -> void:
 		#unit.defense_max = get_defense_max(unit)
 		#unit.defense_current = min(unit.defense_current, unit.defense_max)
 
-static func get_defense_max(unit) -> float:
-	return max(1.0, unit.defense_prop * unit.energy)
+#static func get_defense_max(unit: Unit) -> float:
+	#if unit.mode == UnitShared.ActionMode.UNDER_CONSTRUCTION:
+		#return max(1.0, unit.defense_prop * unit.energy)
+	#else:
+		#return max(1.0, unit.defense_prop * unit.energy_max)
 
-static func get_speed_value(unit) -> float:
-	return nlf(unit.speed_prop, 3) * unit.energy * unit.speed_factor
+#static func get_speed_value(unit: Unit) -> float:
+	#if unit.mode == UnitShared.ActionMode.UNDER_CONSTRUCTION:
+		#return nlf(unit.speed_prop, 3) * unit.energy * unit.speed_factor
+	#else:
+		#return nlf(unit.speed_prop, 3) * unit.energy_max * unit.speed_factor
+		
+#static func get_power_value(unit: Unit) -> float:
+	#if unit.mode == UnitShared.ActionMode.UNDER_CONSTRUCTION:
+		#return unit.power_prop * unit.energy
+	#else:
+		#return unit.power_prop * unit.energy_max
 
-static func get_power_value(unit) -> float:
-	return unit.power_prop * unit.energy
+#static func apply_damage(unit, amount: float) -> void:
+	#unit.defense_current = max(0, unit.defense_current - amount)
+	#if unit.defense_current <= 0:
+		#unit.queue_free()
 
-static func apply_damage(unit, amount: float) -> void:
-	unit.defense_current = max(0, unit.defense_current - amount)
-	if unit.defense_current <= 0:
-		unit.queue_free()
-
-static func build_finished(unit) -> void:
-	unit.defense_current = get_defense_max(unit)
+#static func build_finished(unit) -> void:
+	#unit.defense_current = get_defense_max(unit)
 	
 static func nlf(value: float, mod: float) -> float:
 	#Non linear function - mod=3 is approx x^2

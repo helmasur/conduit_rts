@@ -47,21 +47,7 @@ func _fmt(f: float) -> String:
 		return ("%6.0f" % f)
 
 func _on_transform_button_pressed() -> void:
-	#print("Tricon: ", %TriCon.current_h, " ", %TriCon.current_p, " ", %TriCon.current_s)
-	#print("Mode: ", selected_unit.mode)
-	#print("Conduit Mode: ", selected_unit.conduit_mode)
-	for unit: Unit in selected_units:
-		unit.old_defense_prop = unit.defense_prop
-		unit.old_power_prop = unit.power_prop
-		unit.old_speed_prop = unit.speed_prop
-		unit.target_defense_prop = %TriCon.current_h
-		unit.target_power_prop = %TriCon.current_p
-		unit.target_speed_prop = %TriCon.current_s
-		unit.transform_amount = 0.0
-		unit.transform_current = 0.0
-		unit.transform_amount += abs(unit.target_defense_prop - unit.defense_prop)
-		unit.transform_amount += abs(unit.target_power_prop - unit.power_prop)
-		unit.transform_amount += abs(unit.target_speed_prop - unit.speed_prop)
+	$"/root/Game".transform_selected(%TriCon.current_h, %TriCon.current_p, %TriCon.current_s)
 		
 func _on_conduit_pressed() -> void:
 	for unit in selected_units:

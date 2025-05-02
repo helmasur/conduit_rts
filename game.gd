@@ -66,6 +66,7 @@ func _process(_delta: float) -> void:
 		update_selection_rect(camera.get_global_mouse_position())
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not player: return
 	var camera = $Camera2D
 	var mouse_pos = camera.get_global_mouse_position()
 	
@@ -103,7 +104,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		_handle_right_click(wrapped_pos, clicked_unit)
 
 func _handle_left_click(_world_pos: Vector2, clicked_unit: Unit) -> void:
-	var id = clicked_unit.unit_id if clicked_unit else -1
+	# ger alltid ett heltal: unit_id eller –1
+	var id : int = clicked_unit.unit_id if clicked_unit else -1
+
+	# skicka ingen begäran om redan tomt val
+	if id == -1 and player.selected_units.is_empty():
+		return
+
 	if multiplayer.is_server():
 		request_select_unit(id)
 	else:
@@ -163,7 +170,7 @@ func _handle_right_click(world_pos: Vector2, clicked_unit: Unit) -> void:
 					rpc_id(1, "request_move_unit", unit.unit_id, world_pos)
 	else:
 		if not clicked_unit:
-			var e = $"EnergySlider".value
+			var e = %"EnergySlider".value
 			if multiplayer.is_server():
 				var u = player.spawn_unit(e, %TriCon.current_h, %TriCon.current_p, %TriCon.current_s, world_pos)
 				u.mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
@@ -180,7 +187,31 @@ func request_move_unit(unit_id: int, dest: Vector2) -> void:
 	var u = find_unit_by_id(unit_id)
 	if u and u.player.player_id == sender_id:
 		u.set_destination(dest)
+		
+func transform_selected(target_defense, target_power, target_speed) -> void:
+	rpc_id(1, "request_transform", target_defense, target_power, target_speed)
 
+@rpc("any_peer", "call_remote", "reliable", 0)
+func request_transform(target_defense, target_power, target_speed) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		sender_id = multiplayer.get_unique_id()
+	var pn: Player = get_node(str(sender_id))
+	for uid in pn.selected_units:
+		var unit = pn.get_node(str(uid))
+		unit.old_defense_prop = unit.defense_prop
+		unit.old_power_prop = unit.power_prop
+		unit.old_speed_prop = unit.speed_prop
+		unit.target_defense_prop = target_defense
+		unit.target_power_prop = target_power
+		unit.target_speed_prop = target_speed
+		unit.transform_amount = 0.0
+		unit.transform_current = 0.0
+		unit.transform_amount += abs(unit.target_defense_prop - unit.defense_prop)
+		unit.transform_amount += abs(unit.target_power_prop - unit.power_prop)
+		unit.transform_amount += abs(unit.target_speed_prop - unit.speed_prop)
 
 @rpc("any_peer", "call_remote", "reliable", 0)
 func request_attack_unit(attacker_id: int, target_id: int) -> void:
@@ -199,7 +230,11 @@ func request_attack_unit(attacker_id: int, target_id: int) -> void:
 func request_spawn_unit(e: float, h: float, p: float, s: float, pos: Vector2) -> void:
 	if not multiplayer.is_server():
 		return
-	var u = player.spawn_unit(e, h, p, s, pos)
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		sender_id = multiplayer.get_unique_id()
+	var pn = get_node(str(sender_id))
+	var u = pn.spawn_unit(e, h, p, s, pos)
 	u.mode = UnitShared.ActionMode.UNDER_CONSTRUCTION
 
 func _server_move_unit(unit_id: int, dest: Vector2) -> void:
@@ -274,20 +309,24 @@ func perform_drag_selection(start_pos: Vector2, end_pos: Vector2) -> void:
 func request_select_unit(unit_id: int) -> void:
 	if not multiplayer.is_server():
 		return
-	var sender_id = multiplayer.get_remote_sender_id()
+
+	var sender_id := multiplayer.get_remote_sender_id()
 	if sender_id == 0:
 		sender_id = multiplayer.get_unique_id()
-	var pl = get_node_or_null(str(sender_id)) as Player
+
+	var pl := get_node_or_null(str(sender_id)) as Player
 	if not pl:
 		return
-	if unit_id >= 0:
-		var u = find_unit_by_id(unit_id)
-		if u and u.player.player_id == sender_id:
-			pl.selected_units = [unit_id]
-		else:
+
+	if unit_id == -1:
+		# rensa **enbart** om spelaren verkligen hade något markerat
+		if not pl.selected_units.is_empty():
 			pl.selected_units = []
-	else:
-		pl.selected_units = []
+		return
+
+	var u := find_unit_by_id(unit_id)
+	if u and u.player.player_id == sender_id:
+		pl.selected_units = [unit_id]
 
 
 

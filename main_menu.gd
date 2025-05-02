@@ -9,6 +9,7 @@ func _on_host_button_pressed():
 	MultiplayerManager.host()
 	$"/root/Game"._on_server_start()
 	visible = false
+	DisplayServer.window_set_title("Server")
 	
 	#get_tree().change_scene_to_file("res://game.tscn")
 
@@ -17,6 +18,7 @@ func _on_host_button_pressed():
 func _on_join_button_pressed():
 	MultiplayerManager.join($"IP".text)
 	visible = false
+	DisplayServer.window_set_title("Client")
 	#get_tree().change_scene_to_file("res://game.tscn")
 
 
